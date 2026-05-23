@@ -1,0 +1,34 @@
+<section class="login-shell" dir="rtl">
+  <div class="shape shape-one"></div>
+  <div class="shape shape-two"></div>
+
+  <article class="login-card">
+    <header class="brand-area">
+      <img src="petra_logo_web.svg" alt="Petra logo" class="brand-logo" />
+    </header>
+
+    <form class="login-form" (ngSubmit)="submit()">
+      <label class="field">
+        <span>اسم المستخدم</span>
+        <input type="text" name="userName" [(ngModel)]="model.userName" autocomplete="username" />
+      </label>
+
+      <label class="field">
+        <span>كلمة المرور</span>
+        <input type="password" name="password" [(ngModel)]="model.password" autocomplete="current-password" />
+      </label>
+
+      @if (errorMessage()) {
+        <p class="login-error" role="alert">{{ errorMessage() }}</p>
+      }
+
+      <button type="submit" class="login-btn" [disabled]="loading()">
+        {{ loading() ? 'جاري الدخول…' : 'تسجيل الدخول' }}
+      </button>
+
+      <p class="auth-alt">
+        <a routerLink="/external/login">دخول البوابة الخارجية</a>
+      </p>
+    </form>
+  </article>
+</section>

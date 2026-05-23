@@ -1,0 +1,22 @@
+<section class="external-login-card">
+  <h1>تسجيل دخول خارجي</h1>
+  <p>سجّل الدخول للوصول إلى طلباتك ومتابعتها.</p>
+
+  <label>
+    <span>اسم المستخدم</span>
+    <input type="text" placeholder="اسم المستخدم" />
+  </label>
+
+  <label>
+    <span>كلمة المرور</span>
+    <input type="password" placeholder="كلمة المرور" />
+  </label>
+
+  <button type="button" class="login-btn" (click)="signIn()">تسجيل الدخول</button>
+
+  <p class="hint">
+    <a routerLink="/external">العودة للرئيسية</a>
+    ·
+    <a routerLink="/internal/login">دخول الإدارة</a>
+  </p>
+</section>

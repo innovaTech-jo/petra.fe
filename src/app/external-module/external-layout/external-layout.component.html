@@ -1,0 +1,29 @@
+<div class="external-shell" dir="rtl">
+  <header class="external-header">
+    <button class="mobile-menu-btn" type="button" (click)="toggleMenu()" aria-label="فتح القائمة">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M4 7h16M4 12h16M4 17h16" />
+      </svg>
+    </button>
+
+    <a class="external-brand" [routerLink]="externalRoot">
+      <img src="petra_logo_web.svg" alt="Petra logo" />
+      <span>البوابة الخارجية</span>
+    </a>
+
+    <nav class="external-nav" [class.open]="isMenuOpen">
+      <a class="nav-link" [routerLink]="externalRoot" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" (click)="closeMenu()">الرئيسية</a>
+      <a class="nav-link" routerLink="/external/requests" routerLinkActive="active" (click)="closeMenu()">طلباتي</a>
+      <a class="nav-link" routerLink="/internal" (click)="closeMenu()">لوحة الإدارة</a>
+      <a class="nav-link" routerLink="/external/login" (click)="closeMenu()">تسجيل الدخول</a>
+    </nav>
+
+    @if (sessionDisplayName()) {
+      <span class="external-user">{{ sessionDisplayName() }}</span>
+    }
+  </header>
+
+  <main class="external-content">
+    <router-outlet></router-outlet>
+  </main>
+</div>

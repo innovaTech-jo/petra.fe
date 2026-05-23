@@ -1,0 +1,237 @@
+@import url("https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap");
+
+/* PrimeNG + app typography (Tajawal) */
+:root {
+  --p-font-family: "Tajawal", "Segoe UI", sans-serif;
+  --app-primary: #d96d0f;
+  --app-primary-hover: #b85a0d;
+  --app-primary-soft: #fff8f2;
+}
+
+/* System: no drop shadows on buttons (native + PrimeNG) */
+.p-button,
+.p-button:not(:disabled):hover,
+.p-inputnumber-button,
+.p-inputnumber-button:hover,
+.p-speeddial-button,
+.p-splitbutton .p-button {
+  box-shadow: none !important;
+}
+
+button[type='button'],
+button[type='submit'] {
+  box-shadow: none;
+}
+
+.p-button:focus-visible {
+  box-shadow: 0 0 0 2px #fff, 0 0 0 4px var(--app-primary) !important;
+}
+
+/* Primary CTA in page headers (projected into app-page-header) */
+.app-page-header-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 22px;
+  border-radius: 999px;
+  border: none;
+  background: var(--app-primary);
+  color: #fff;
+  font-size: 0.8rem;
+  font-weight: 800;
+  font-family: inherit;
+  text-decoration: none;
+  cursor: pointer;
+  box-shadow: none;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.app-page-header-btn:hover {
+  background: var(--app-primary-hover);
+  color: #fff;
+}
+
+.app-page-header-btn--ghost {
+  background: #fff;
+  color: #64748b;
+  border: 1px solid #e2e8f0;
+}
+
+.app-page-header-btn--ghost:hover {
+  background: #f8fafc;
+  color: #334155;
+}
+
+.app-page-header-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Unified «add» control (same as users list: height, padding, icon) */
+button.add-user-btn,
+a.add-user-btn {
+  border: 0;
+  background: var(--app-primary);
+  color: #fff;
+  border-radius: 999px;
+  padding: 8px 14px;
+  min-height: 36px;
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 0.74rem;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  box-shadow: none;
+  text-decoration: none;
+  line-height: 1.2;
+}
+
+a.add-user-btn:hover {
+  background: var(--app-primary-hover);
+  color: #fff;
+}
+
+button.add-user-btn:hover:not(:disabled) {
+  background: var(--app-primary-hover);
+}
+
+button.add-user-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.add-user-btn svg {
+  width: 15px;
+  height: 15px;
+  flex-shrink: 0;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* Native tables: thead like users list */
+table.app-data-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+table.app-data-table thead th {
+ background: var(--app-primary);
+    color: white;
+  font-weight: 800;
+  padding: 11px 12px;
+  border-bottom: 1px solid #eff3fb;
+  font-size: 0.78rem;
+  text-align: center;
+}
+
+table.app-data-table tbody td {
+  padding: 11px 12px;
+  border-bottom: 1px solid #eff3fb;
+  font-size: 0.78rem;
+  text-align: center;
+}
+
+/* PrimeNG data tables */
+.p-datatable.app-table-prime .p-datatable-thead > tr > th {
+  background: #f7f9fe !important;
+  color: #5f6f90 !important;
+  font-weight: 800 !important;
+  border-color: #eff3fb !important;
+  font-size: 0.78rem;
+  padding: 11px 12px !important;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+}
+
+body {
+  font-family: "Tajawal", "Segoe UI", sans-serif;
+  background: radial-gradient(circle at 15% 20%, #f9fbff 0%, #edf2fb 35%, #e7edf8 100%);
+}
+
+button,
+a {
+  font-family: inherit;
+}
+
+/* Transport voucher: p-select uses appendTo="body" — panel must match RTL + font */
+.tv-select-overlay {
+  direction: rtl;
+  font-family: "Tajawal", "Segoe UI", sans-serif;
+}
+
+.tv-select-overlay .p-select-list,
+.tv-select-overlay .p-select-option {
+  font-family: "Tajawal", "Segoe UI", sans-serif;
+  font-size: 0.84rem;
+  font-weight: 600;
+}
+
+.tv-select-overlay .p-select-filter,
+.tv-select-overlay .p-select-filter input {
+  font-family: "Tajawal", "Segoe UI", sans-serif;
+  font-size: 0.84rem;
+}
+
+.tv-select-overlay .p-select-filter input {
+  background: #ffffff;
+}
+
+/* PrimeNG DatePicker overlay (appendTo body) */
+.tv-datepicker-panel {
+  direction: rtl;
+  font-family: "Tajawal", "Segoe UI", sans-serif;
+}
+
+.tv-datepicker-panel .p-datepicker-header,
+.tv-datepicker-panel .p-datepicker-calendar,
+.tv-datepicker-panel .p-datepicker-buttonbar {
+  font-family: "Tajawal", "Segoe UI", sans-serif;
+  font-size: 0.84rem;
+}
+
+.tv-datepicker-panel .p-datepicker-day {
+  font-weight: 600;
+}
+
+/* ????? (?????? ??????? / ????? ????? / ?????): ????? ??????? ???????? ????? ?????? */
+@media print {
+  body.tr-voucher-print .dashboard-frame {
+    display: block;
+    padding: 0;
+    border: none;
+    background: #fff;
+    box-shadow: none;
+  }
+
+  body.tr-voucher-print .sidebar-panel,
+  body.tr-voucher-print .content-toolbar,
+  body.tr-voucher-print .mobile-backdrop {
+    display: none !important;
+  }
+
+  body.tr-voucher-print .content-panel {
+    border: none;
+    padding: 0;
+    border-radius: 0;
+    box-shadow: none;
+    background: #fff;
+  }
+}

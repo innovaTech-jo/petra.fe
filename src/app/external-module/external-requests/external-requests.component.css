@@ -1,0 +1,32 @@
+.requests-page {
+  background: #fff;
+  border: 1px solid #e8edf7;
+  border-radius: 20px;
+  padding: 24px;
+}
+
+.requests-page header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.requests-page h1 {
+  margin: 0;
+  font-size: 1.2rem;
+  color: #25304f;
+}
+
+.back-link {
+  color: var(--app-primary, #d96d0f);
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+.empty-state {
+  margin: 0;
+  color: #6f7f9e;
+}

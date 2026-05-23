@@ -1,0 +1,35 @@
+<app-page-header title="الإشعارات" subtitle="إشعارات الشركة (FCM)" />
+
+<section class="list-toolbar">
+  <input
+    type="search"
+    placeholder="بحث…"
+    [value]="searchParameters.keyword ?? ''"
+    (input)="onSearch(($any($event.target)).value)"
+  />
+</section>
+
+@if (loadingList) {
+  <p>جاري التحميل…</p>
+} @else {
+  <div class="notif-list">
+    @for (row of rows; track row.id) {
+      <article class="notif-card">
+        <h3>{{ row.title }}</h3>
+        <p>{{ row.body }}</p>
+        <small>{{ row.createdDate | date: 'medium' : undefined : 'ar-JO' }}</small>
+      </article>
+    } @empty {
+      <p>لا توجد إشعارات</p>
+    }
+  </div>
+
+  <app-list-pagination-bar
+    [pageNumber]="searchParameters.pagingParameters!.pageNumber ?? 1"
+    [pageSize]="searchParameters.pagingParameters!.pageSize ?? 10"
+    [totalCount]="searchParameters.totalCount ?? 0"
+    [pageSizeOptions]="pageSizeOptions"
+    (pageChange)="onPageChange($event)"
+    (pageSizeChange)="onPageSizeChange($event)"
+  />
+}

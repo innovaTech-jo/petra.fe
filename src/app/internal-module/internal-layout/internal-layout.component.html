@@ -1,0 +1,98 @@
+<div class="app-shell" dir="rtl">
+  <section class="dashboard-frame" [class.menu-open]="isMenuOpen">
+    <button class="mobile-backdrop" type="button" (click)="closeMenu()" aria-label="اغلاق القائمة"></button>
+
+    <main class="content-panel">
+      <header class="content-toolbar">
+        <button class="mobile-menu-btn" type="button" (click)="toggleMenu()" aria-label="فتح القائمة">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M4 7h16M4 12h16M4 17h16" />
+          </svg>
+        </button>
+        <div class="content-toolbar-cluster">
+          @if (sessionDisplayName()) {
+            <span class="content-user-name">{{ sessionDisplayName() }}</span>
+          }
+          <div class="mobile-brand" aria-hidden="true">
+            <img src="petra_logo_web.svg" alt="" class="mobile-brand-logo" />
+          </div>
+        </div>
+      </header>
+
+      <router-outlet></router-outlet>
+    </main>
+
+    <aside class="sidebar-panel" [class.open]="isMenuOpen">
+      <button class="close-menu-btn" type="button" (click)="closeMenu()" aria-label="اغلاق القائمة">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="m6 6 12 12M18 6 6 18" />
+        </svg>
+      </button>
+
+      <div class="logo-card">
+        <img class="brand-logo" src="petra_logo_web.svg" alt="Petra logo" />
+        <p class="logo-sub">لوحة الإدارة</p>
+      </div>
+
+      @if (sessionDisplayName()) {
+        <p class="sidebar-user">{{ sessionDisplayName() }}</p>
+      }
+
+      <nav class="menu-list" aria-label="القائمة الرئيسية">
+        <a
+          class="menu-item"
+          [routerLink]="internalRoot"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: true }"
+          (click)="closeMenu()"
+        >
+          <span>الرئيسية</span>
+        </a>
+
+        @if (can(permissions.Users)) {
+          <a class="menu-item" routerLink="/internal/users" routerLinkActive="active" (click)="closeMenu()">
+            <span>المستخدمون</span>
+          </a>
+        }
+
+        @if (can(permissions.Roles)) {
+          <a class="menu-item" routerLink="/internal/user-roles" routerLinkActive="active" (click)="closeMenu()">
+            <span>الأدوار</span>
+          </a>
+        }
+
+        @if (can(permissions.Groups)) {
+          <a class="menu-item" routerLink="/internal/groups" routerLinkActive="active" (click)="closeMenu()">
+            <span>المجموعات</span>
+          </a>
+        }
+
+        @if (can(permissions.Applications)) {
+          <a class="menu-item" routerLink="/internal/applications" routerLinkActive="active" (click)="closeMenu()">
+            <span>التطبيقات</span>
+          </a>
+        }
+
+        @if (can(permissions.Notifications)) {
+          <a class="menu-item" routerLink="/internal/notifications" routerLinkActive="active" (click)="closeMenu()">
+            <span>الإشعارات</span>
+          </a>
+        }
+
+        @if (can(permissions.Settings)) {
+          <a class="menu-item" routerLink="/internal/settings" routerLinkActive="active" (click)="closeMenu()">
+            <span>الإعدادات</span>
+          </a>
+        }
+
+        <a class="menu-item" routerLink="/external" (click)="closeMenu()">
+          <span>البوابة الخارجية</span>
+        </a>
+
+        <button type="button" class="menu-item menu-button" (click)="logout(); closeMenu()">
+          <span>تسجيل خروج</span>
+        </button>
+      </nav>
+    </aside>
+  </section>
+</div>

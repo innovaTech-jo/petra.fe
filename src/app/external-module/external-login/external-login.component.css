@@ -1,0 +1,58 @@
+.external-login-card {
+  max-width: 420px;
+  margin: 40px auto;
+  background: #fff;
+  border: 1px solid #e8edf7;
+  border-radius: 20px;
+  padding: 24px;
+  display: grid;
+  gap: 14px;
+}
+
+.external-login-card h1 {
+  margin: 0;
+  font-size: 1.25rem;
+  color: #25304f;
+}
+
+.external-login-card p {
+  margin: 0;
+  color: #6f7f9e;
+  font-size: 0.9rem;
+}
+
+label {
+  display: grid;
+  gap: 6px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #5f6f90;
+}
+
+input {
+  border: 1px solid #dfe5f2;
+  border-radius: 10px;
+  padding: 10px 12px;
+  font: inherit;
+}
+
+.login-btn {
+  border: 0;
+  border-radius: 12px;
+  background: var(--app-primary);
+  color: #fff;
+  padding: 10px 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.hint {
+  text-align: center;
+  font-size: 0.82rem;
+}
+
+.hint a {
+  color: var(--app-primary, #d96d0f);
+  text-decoration: none;
+  font-weight: 700;
+}

@@ -1,0 +1,48 @@
+<app-page-header title="المجموعات" subtitle="مجموعات المستخدمين" />
+
+<section class="list-toolbar">
+  <input
+    type="search"
+    placeholder="بحث…"
+    [value]="searchParameters.keyword ?? ''"
+    (input)="onSearch(($any($event.target)).value)"
+  />
+</section>
+
+@if (loadingList) {
+  <p>جاري التحميل…</p>
+} @else {
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>الاسم (ع)</th>
+          <th>الاسم (En)</th>
+          <th>الحالة</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (row of rows; track row.id) {
+          <tr>
+            <td>{{ row.nameAr }}</td>
+            <td>{{ row.nameOt }}</td>
+            <td>{{ row.active ? 'فعّال' : 'موقوف' }}</td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="3">لا توجد مجموعات</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <app-list-pagination-bar
+    [pageNumber]="searchParameters.pagingParameters!.pageNumber ?? 1"
+    [pageSize]="searchParameters.pagingParameters!.pageSize ?? 10"
+    [totalCount]="searchParameters.totalCount ?? 0"
+    [pageSizeOptions]="pageSizeOptions"
+    (pageChange)="onPageChange($event)"
+    (pageSizeChange)="onPageSizeChange($event)"
+  />
+}

@@ -1,0 +1,75 @@
+.external-hero {
+  background: #fff;
+  border: 1px solid #e8edf7;
+  border-radius: 20px;
+  padding: 28px;
+  margin-bottom: 18px;
+}
+
+.external-hero h1 {
+  margin: 0 0 10px;
+  font-size: 1.5rem;
+  color: #25304f;
+}
+
+.external-hero p {
+  margin: 0 0 18px;
+  color: #6f7f9e;
+}
+
+.external-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.btn-primary,
+.btn-secondary {
+  text-decoration: none;
+  border-radius: 12px;
+  padding: 10px 16px;
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+.btn-primary {
+  background: var(--app-primary);
+  color: #fff;
+}
+
+.btn-secondary {
+  background: #fff;
+  color: #5f6f90;
+  border: 1px solid #dfe5f2;
+}
+
+.external-cards {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.card {
+  background: #fff;
+  border: 1px solid #e8edf7;
+  border-radius: 16px;
+  padding: 18px;
+}
+
+.card h2 {
+  margin: 0 0 8px;
+  font-size: 1rem;
+  color: #2d395b;
+}
+
+.card p {
+  margin: 0;
+  color: #6f7f9e;
+  font-size: 0.85rem;
+}
+
+@media (max-width: 900px) {
+  .external-cards {
+    grid-template-columns: 1fr;
+  }
+}

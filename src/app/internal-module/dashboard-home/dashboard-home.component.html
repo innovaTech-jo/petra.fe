@@ -1,0 +1,49 @@
+﻿<section class="petra-dashboard" dir="rtl">
+  <header class="dash-header">
+    <div>
+      <h1>لوحة التحكم</h1>
+      @if (requesterDisplayName) {
+        <p class="welcome-line">مرحباً، {{ requesterDisplayName }}</p>
+      }
+    </div>
+    <button type="button" class="refresh-btn" (click)="loadStats()" [disabled]="loading">تحديث</button>
+  </header>
+
+  @if (loading) {
+    <p class="dash-loading">جاري تحميل البيانات…</p>
+  } @else {
+    <div class="stats-grid">
+      @for (card of visibleStats(); track card.label) {
+        <a class="stat-card" [routerLink]="card.link">
+          <span class="stat-label">{{ card.label }}</span>
+          <strong class="stat-value">{{ card.count }}</strong>
+          <span class="stat-link">عرض</span>
+        </a>
+      }
+    </div>
+
+    <section class="quick-links">
+      <h2>اختصارات</h2>
+      <div class="links-row">
+        @if (can(systemPermissions.Users)) {
+          <a routerLink="/internal/users">إدارة المستخدمين</a>
+        }
+        @if (can(systemPermissions.Roles)) {
+          <a routerLink="/internal/user-roles">الأدوار والصلاحيات</a>
+        }
+        @if (can(systemPermissions.Groups)) {
+          <a routerLink="/internal/groups">المجموعات</a>
+        }
+        @if (can(systemPermissions.Applications)) {
+          <a routerLink="/internal/applications">التطبيقات (APK)</a>
+        }
+        @if (can(systemPermissions.Notifications)) {
+          <a routerLink="/internal/notifications">الإشعارات</a>
+        }
+        @if (can(systemPermissions.Settings)) {
+          <a routerLink="/internal/settings">الإعدادات</a>
+        }
+      </div>
+    </section>
+  }
+</section>

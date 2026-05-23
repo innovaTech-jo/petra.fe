@@ -1,0 +1,55 @@
+<footer class="pagination-bar" dir="rtl">
+  <p class="pager-info">عرض {{ pageStart() }}-{{ pageEnd() }} من {{ totalCount() }}</p>
+
+  <div class="pager-controls">
+    <button
+      class="pager-btn ghost"
+      type="button"
+      (click)="pageChange.emit(pageNumber() - 1)"
+      [disabled]="pageNumber() === 1"
+    >
+      السابق
+    </button>
+
+    <div class="pager-numbers">
+      @for (page of pageNumbers(); track page) {
+        <button
+          class="pager-btn"
+          type="button"
+          [class.active]="page === pageNumber()"
+          (click)="pageChange.emit(page)"
+        >
+          {{ page }}
+        </button>
+      }
+    </div>
+
+    <button
+      class="pager-btn ghost"
+      type="button"
+      (click)="pageChange.emit(pageNumber() + 1)"
+      [disabled]="pageNumber() === totalPages()"
+    >
+      التالي
+    </button>
+  </div>
+
+  <label class="page-size">
+    <span>لكل صفحة</span>
+    @if (pageSizeOptions().length > 0) {
+      <div class="page-size-range-row">
+        <input
+          type="range"
+          class="page-size-range"
+          [min]="0"
+          [max]="pageSizeMaxIndex()"
+          step="1"
+          [value]="pageSizeRangeIndex()"
+          (input)="onPageSizeRangeInput($event)"
+          (change)="emitPageSizeFromRange($event)"
+        />
+        <span class="page-size-value" aria-live="polite">{{ pageSizeRangeLabel() }}</span>
+      </div>
+    }
+  </label>
+</footer>

@@ -1,0 +1,163 @@
+@if (notificationService.toast(); as t) {
+  <div class="toast-banner" [class.error]="t.type === 'error'" role="status">
+    {{ t.text }}
+    <button type="button" class="toast-dismiss" (click)="notificationService.dismiss()">×</button>
+  </div>
+}
+
+<section class="apps-shell">
+  <app-page-header
+    eyebrow="إدارة التطبيقات"
+    title="التطبيقات"
+    description="إدارة التطبيقات مع رفع صورة (PNG / JPEG / WebP / GIF) بدلاً من ملف APK."
+  >
+    <div class="app-page-header-toolbar">
+      <label class="search-field">
+        <span class="sr-only">بحث</span>
+        <input
+          type="search"
+          [value]="searchParameters.keyword ?? ''"
+          (input)="onSearchInput($event)"
+          placeholder="بحث..."
+        />
+      </label>
+      @if (can(systemPermissions.AddApks)) {
+        <button type="button" class="add-user-btn" (click)="showCreateModal()">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" /></svg>
+          <span>إضافة</span>
+        </button>
+      }
+    </div>
+  </app-page-header>
+
+  <div class="users-card">
+    <div class="table-wrap">
+      <table class="app-data-table">
+        <thead>
+          <tr>
+            <th>الوصف (عربي)</th>
+            <th>الوصف (إنجليزي)</th>
+            <th>اسم الحزمة</th>
+            <th>الإصدار</th>
+            <th>الحجم</th>
+            <th>الحالة</th>
+            <th>تاريخ الإنشاء</th>
+            <th>أنشأه</th>
+            @if (can(systemPermissions.EditApks)) {
+              <th>تعديل</th>
+            }
+          </tr>
+        </thead>
+        <tbody>
+          @if (loadingList) {
+            <tr>
+              <td [attr.colspan]="colCount()" class="empty-state">جاري التحميل...</td>
+            </tr>
+          } @else {
+            @for (app of allApplications; track $index) {
+              <tr>
+                <td data-label="عربي">{{ ((app.nameAr ?? '') | slice: 0 : 25) || '—' }}</td>
+                <td data-label="إنجليزي">{{ ((app.nameOt ?? '') | slice: 0 : 25) || '—' }}</td>
+                <td data-label="الحزمة">{{ app.packageName ?? '—' }}</td>
+                <td data-label="الإصدار">{{ app.versionName ?? '—' }}</td>
+                <td data-label="الحجم">{{ formatSizeMb(app.appSize) }}</td>
+                <td data-label="الحالة">
+                  @if (app.active === 1) {
+                    <span class="status">نشط</span>
+                  } @else {
+                    <span class="status inactive">غير نشط</span>
+                  }
+                </td>
+                <td data-label="التاريخ">{{ formatCreatedDate(app.createdDate) }}</td>
+                <td data-label="أنشأه">{{ app.createdByName ?? '—' }}</td>
+                @if (can(systemPermissions.EditApks)) {
+                  <td data-label="تعديل">
+                    <button type="button" class="edit-btn" (click)="getApplicationById(app.id)">تعديل</button>
+                  </td>
+                }
+              </tr>
+            } @empty {
+              <tr>
+                <td class="empty-state" [attr.colspan]="colCount()">
+                  لا توجد تطبيقات.
+                </td>
+              </tr>
+            }
+          }
+        </tbody>
+      </table>
+    </div>
+
+    @if ((searchParameters.totalCount ?? 0) > 0) {
+      <app-list-pagination-bar
+        [totalCount]="searchParameters.totalCount ?? 0"
+        [pageNumber]="searchParameters.pagingParameters!.pageNumber ?? 1"
+        [pageSize]="searchParameters.pagingParameters!.pageSize ?? 10"
+        [pageSizeOptions]="pageSizeOptions"
+        (pageChange)="changePage($event)"
+        (pageSizeChange)="onPageSizeChange($event)"
+      />
+    }
+  </div>
+</section>
+
+@if (isModalOpen) {
+  <div class="modal-overlay" (click)="closeModal()">
+    <section class="user-modal apps-modal" (click)="$event.stopPropagation()" dir="rtl">
+      <header class="modal-header">
+        <div>
+          <h3>{{ application.id ? 'تعديل التطبيق' : 'تطبيق جديد' }}</h3>
+          <p>اختر صورة للرفع؛ عند التعديل يجب اختيار صورة جديدة ثم الحفظ.</p>
+        </div>
+        <button class="modal-close" type="button" (click)="closeModal()" [disabled]="isSaving" aria-label="اغلاق">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18" /></svg>
+        </button>
+      </header>
+
+      <form #appForm="ngForm" class="user-form apps-form">
+        <label class="form-field full">
+          <span>الوصف بالعربية <span class="req">*</span></span>
+          <input type="text" [(ngModel)]="application.nameAr" required name="nameAr" maxlength="50" />
+        </label>
+        <label class="form-field full">
+          <span>الوصف بالإنجليزية <span class="req">*</span></span>
+          <input type="text" [(ngModel)]="application.nameOt" required name="nameOt" maxlength="50" />
+        </label>
+
+        <div class="form-field full">
+          <span>صورة التطبيق <span class="req">*</span></span>
+          <input
+            type="file"
+            name="appImage"
+            [accept]="acceptImages"
+            (change)="onFileSelected($event)"
+            class="file-input"
+          />
+          <small class="hint">صيغ مدعومة: PNG، JPEG، WebP، GIF. SVG مسموح إذا كان الحجم أقل من 500 ك.ب.</small>
+          @if (previewUrl) {
+            <div class="preview-wrap">
+              <img [src]="previewUrl" alt="معاينة الصورة" class="preview-img" />
+            </div>
+          }
+        </div>
+
+        <label class="form-field checkbox-row full">
+          <input type="checkbox" [checked]="application.active === 1" (change)="onActiveChange()" />
+          <span>نشط</span>
+        </label>
+
+        <div class="form-actions">
+          <button
+            type="button"
+            class="save-btn"
+            (click)="save(appForm)"
+            [disabled]="!appForm.valid || !selectedFile || isSaving"
+          >
+            {{ isSaving ? 'جاري الحفظ...' : 'حفظ' }}
+          </button>
+          <button type="button" class="cancel-btn" (click)="closeModal()" [disabled]="isSaving">إلغاء</button>
+        </div>
+      </form>
+    </section>
+  </div>
+}

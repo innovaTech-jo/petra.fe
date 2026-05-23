@@ -1,0 +1,38 @@
+.list-toolbar {
+  margin-bottom: 12px;
+}
+
+.list-toolbar input {
+  width: min(320px, 100%);
+  border: 1px solid #dfe5f2;
+  border-radius: 10px;
+  padding: 10px 12px;
+}
+
+.notif-list {
+  display: grid;
+  gap: 10px;
+}
+
+.notif-card {
+  background: #fff;
+  border: 1px solid #e8edf7;
+  border-radius: 14px;
+  padding: 14px;
+}
+
+.notif-card h3 {
+  margin: 0 0 6px;
+  font-size: 0.95rem;
+  color: #25304f;
+}
+
+.notif-card p {
+  margin: 0 0 8px;
+  color: #586688;
+  font-size: 0.85rem;
+}
+
+.notif-card small {
+  color: #9ba7c0;
+}

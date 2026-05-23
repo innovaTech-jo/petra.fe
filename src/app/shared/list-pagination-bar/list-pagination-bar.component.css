@@ -1,0 +1,158 @@
+.pagination-bar {
+  margin-top: 12px;
+  padding: 10px 12px;
+  border: 1px solid color-mix(in srgb, var(--app-primary) 22%, #e7edf9);
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--app-primary) 6%, #fff);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.pager-info {
+  margin: 0;
+  color: color-mix(in srgb, var(--app-primary) 55%, #334155);
+  font-size: 0.74rem;
+  font-weight: 700;
+}
+
+.pager-controls {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pager-numbers {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.pager-btn {
+  min-width: 34px;
+  height: 34px;
+  border: 1px solid color-mix(in srgb, var(--app-primary) 35%, #dbe4f6);
+  border-radius: 10px;
+  background: #fff;
+  color: color-mix(in srgb, var(--app-primary) 40%, #334155);
+  font-size: 0.74rem;
+  font-weight: 700;
+  padding: 0 10px;
+  cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease,
+    color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.pager-btn:hover:not(:disabled) {
+  border-color: color-mix(in srgb, var(--app-primary) 55%, #e5e5e5);
+  background: color-mix(in srgb, var(--app-primary) 10%, #fff);
+  color: var(--app-primary-hover, #b85a0d);
+}
+
+.pager-btn:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px #fff, 0 0 0 4px color-mix(in srgb, var(--app-primary) 35%, transparent);
+}
+
+.pager-btn.active {
+  border-color: var(--app-primary);
+  background: var(--app-primary);
+  color: #fff;
+  box-shadow: 0 1px 2px color-mix(in srgb, var(--app-primary) 35%, transparent);
+}
+
+.pager-btn.active:hover:not(:disabled) {
+  background: var(--app-primary-hover, #b85a0d);
+  border-color: var(--app-primary-hover, #b85a0d);
+  color: #fff;
+}
+
+.pager-btn.ghost {
+  background: color-mix(in srgb, var(--app-primary) 5%, #fff);
+}
+
+.pager-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.page-size {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: color-mix(in srgb, var(--app-primary) 50%, #475569);
+  font-size: 0.74rem;
+  font-weight: 700;
+}
+
+.page-size-range-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.page-size-value {
+  min-width: 1.75rem;
+  text-align: center;
+  padding: 4px 8px;
+  border: 1px solid color-mix(in srgb, var(--app-primary) 38%, #dbe4f6);
+  border-radius: 9px;
+  background: #fff;
+  color: #34466f;
+  font-size: 0.74rem;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Keep slider direction predictable in RTL (min left, max right). */
+.page-size-range {
+  width: min(140px, 36vw);
+  height: 28px;
+  margin: 0;
+  cursor: pointer;
+  direction: ltr;
+  accent-color: var(--app-primary);
+}
+
+.page-size-range:focus-visible {
+  outline: none;
+}
+
+.page-size-range:focus-visible::-webkit-slider-thumb {
+  box-shadow: 0 0 0 2px #fff, 0 0 0 4px color-mix(in srgb, var(--app-primary) 45%, transparent);
+}
+
+.page-size-range:focus-visible::-moz-range-thumb {
+  box-shadow: 0 0 0 2px #fff, 0 0 0 4px color-mix(in srgb, var(--app-primary) 45%, transparent);
+}
+
+@media (max-width: 760px) {
+  .pagination-bar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .pager-controls,
+  .pager-numbers {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .pager-numbers {
+    max-width: 100%;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    padding-bottom: 4px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+  }
+
+  .page-size {
+    justify-content: center;
+  }
+}

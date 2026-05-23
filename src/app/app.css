@@ -1,0 +1,200 @@
+:host {
+  display: block;
+  min-height: 100dvh;
+  color: #1f2a44;
+}
+
+.app-splash {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background: radial-gradient(
+    circle at 15% 20%,
+    #fff8f2 0%,
+    #ffedd5 38%,
+    #fde8d0 100%
+  );
+}
+
+.splash-aurora {
+  position: absolute;
+  border-radius: 999px;
+  filter: blur(10px);
+  pointer-events: none;
+}
+
+.splash-aurora-one {
+  width: 380px;
+  height: 380px;
+  background: radial-gradient(circle, color-mix(in srgb, var(--app-primary) 42%, transparent), transparent);
+  top: -120px;
+  left: -120px;
+  animation: aurora-float 6.5s ease-in-out infinite;
+}
+
+.splash-aurora-two {
+  width: 450px;
+  height: 450px;
+  background: radial-gradient(circle, rgba(251, 191, 36, 0.28), transparent);
+  bottom: -160px;
+  right: -120px;
+  animation: aurora-float 7.8s ease-in-out infinite reverse;
+}
+
+.splash-core {
+  position: relative;
+  width: min(450px, calc(100% - 28px));
+  border-radius: 30px;
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.94), rgba(255, 255, 255, 0.94)) padding-box,
+    linear-gradient(
+      140deg,
+      color-mix(in srgb, var(--app-primary) 35%, #fff),
+      color-mix(in srgb, var(--app-primary) 55%, #fcd9a8) 48%,
+      #fff4e8
+    )
+      border-box;
+  border: 1px solid transparent;
+  box-shadow: 0 26px 70px color-mix(in srgb, var(--app-primary) 22%, transparent);
+  padding: 26px 22px;
+  text-align: center;
+}
+
+.splash-logo-wrap {
+  width: min(285px, 100%);
+  margin: 0 auto;
+  padding: 14px 16px;
+  border-radius: 18px;
+  background: linear-gradient(135deg, #fffaf5, #fff1e6);
+  border: 1px solid color-mix(in srgb, var(--app-primary) 22%, #fff);
+  position: relative;
+  z-index: 2;
+}
+
+.splash-logo {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.splash-orbit {
+  position: absolute;
+  width: 280px;
+  height: 280px;
+  border-radius: 999px;
+  border: 1px dashed color-mix(in srgb, var(--app-primary) 38%, transparent);
+  top: -34px;
+  left: 50%;
+  transform: translateX(-50%);
+  animation: splash-spin 7s linear infinite;
+}
+
+.splash-orbit::before {
+  content: '';
+  width: 11px;
+  height: 11px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--app-primary), var(--app-primary-hover, #b85a0d));
+  position: absolute;
+  top: 24px;
+  left: 24px;
+  box-shadow: 0 0 0 5px color-mix(in srgb, var(--app-primary) 18%, transparent);
+}
+
+.splash-orbit.reverse {
+  width: 236px;
+  height: 236px;
+  top: -12px;
+  border-color: color-mix(in srgb, #fbbf24 45%, var(--app-primary) 25%);
+  animation: splash-spin-reverse 6.4s linear infinite;
+}
+
+.splash-orbit.reverse::before {
+  top: auto;
+  bottom: 20px;
+  left: auto;
+  right: 20px;
+  background: linear-gradient(135deg, #fbbf24, var(--app-primary));
+}
+
+.splash-title {
+  margin: 16px 0 6px;
+  letter-spacing: 2px;
+  color: color-mix(in srgb, var(--app-primary) 72%, #1c1917);
+  font-size: 0.98rem;
+  font-weight: 800;
+}
+
+.splash-subtitle {
+  margin: 0 0 16px;
+  color: #78716c;
+  font-size: 0.83rem;
+  font-weight: 700;
+}
+
+.splash-progress {
+  width: min(280px, 100%);
+  height: 8px;
+  margin: 0 auto;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--app-primary) 12%, #fff);
+  overflow: hidden;
+}
+
+.splash-progress span {
+  display: block;
+  width: 42%;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(
+    95deg,
+    var(--app-primary-hover, #b85a0d),
+    var(--app-primary),
+    #fbbf24
+  );
+  animation: splash-progress 1.25s ease-in-out infinite;
+}
+
+@keyframes aurora-float {
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+  }
+
+  50% {
+    transform: translateY(18px) scale(1.05);
+  }
+}
+
+@keyframes splash-spin {
+  0% {
+    transform: translateX(-50%) rotate(0deg);
+  }
+
+  100% {
+    transform: translateX(-50%) rotate(360deg);
+  }
+}
+
+@keyframes splash-spin-reverse {
+  0% {
+    transform: translateX(-50%) rotate(0deg);
+  }
+
+  100% {
+    transform: translateX(-50%) rotate(-360deg);
+  }
+}
+
+@keyframes splash-progress {
+  0% {
+    transform: translateX(-120%);
+  }
+
+  100% {
+    transform: translateX(260%);
+  }
+}
