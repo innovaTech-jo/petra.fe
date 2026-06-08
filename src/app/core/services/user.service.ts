@@ -11,7 +11,7 @@ export class UserService extends ApiBaseService {
     return super.searchEntity<UsersDto, UserSearchFilter>(this.path, filter);
   }
 
-  getById(id: string): Observable<UsersDto> {
+  getById(id: number): Observable<UsersDto> {
     return super.getEntityById<UsersDto>(this.path, id);
   }
 
@@ -23,7 +23,7 @@ export class UserService extends ApiBaseService {
     return super.updateEntity(this.path, dto);
   }
 
-  delete(id: string): Observable<boolean> {
+  delete(id: number): Observable<boolean> {
     return super.deleteEntity(this.path, id);
   }
 }

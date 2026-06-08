@@ -11,7 +11,7 @@ export class ApplicationService extends ApiBaseService {
     return super.searchEntity<ApplicationDto, ApplicationSearchFilter>(this.path, filter);
   }
 
-  getById(id: string): Observable<ApplicationDto> {
+  getById(id: number | string): Observable<ApplicationDto> {
     return super.getEntityById<ApplicationDto>(this.path, id);
   }
 
@@ -23,7 +23,7 @@ export class ApplicationService extends ApiBaseService {
     return super.updateEntity(this.path, dto);
   }
 
-  delete(id: string): Observable<boolean> {
+  delete(id: number | string): Observable<boolean> {
     return super.deleteEntity(this.path, id);
   }
 }

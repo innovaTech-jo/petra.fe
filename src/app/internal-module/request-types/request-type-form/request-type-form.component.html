@@ -1,0 +1,190 @@
+@if (notificationService.toast(); as t) {
+  <div class="toast-banner" [class.error]="t.type === 'error'" role="status">
+    {{ t.text }}
+    <button type="button" class="toast-dismiss" (click)="notificationService.dismiss()">×</button>
+  </div>
+}
+
+<section class="role-form-page rt-form-page" dir="rtl">
+  <header class="form-page-header">
+    <a class="back-link" routerLink="/internal/request-types">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m14 7-5 5 5 5M19 12H9" /></svg>
+      <span>رجوع للقائمة</span>
+    </a>
+    <h1>{{ isEditMode ? 'تعديل نوع الخدمة' : 'نوع خدمة جديد' }}</h1>
+  </header>
+
+  <div class="wizard-steps wizard-steps-three">
+    <button type="button" class="wizard-step" [class.active]="wizardStep === 1" [class.completed]="wizardStep > 1" (click)="goToWizardStep(1)">
+      <span class="step-number">1</span><span class="step-label">بيانات عامة</span>
+    </button>
+    <div class="wizard-connector" [class.completed]="wizardStep > 1"></div>
+    <button type="button" class="wizard-step" [class.active]="wizardStep === 2" [class.completed]="wizardStep > 2" [disabled]="!editingRequestType.id" (click)="goToWizardStep(2)">
+      <span class="step-number">2</span><span class="step-label">حقول الخدمة</span>
+    </button>
+    <div class="wizard-connector" [class.completed]="wizardStep > 2"></div>
+    <button type="button" class="wizard-step" [class.active]="wizardStep === 3" [disabled]="!editingRequestType.id" (click)="goToWizardStep(3)">
+      <span class="step-number">3</span><span class="step-label">المرفقات</span>
+    </button>
+  </div>
+
+  <div class="wizard-body">
+    @if (wizardStep === 1) {
+      <div class="wizard-panel">
+        <label class="form-field"><span>العنوان <span class="req">*</span></span>
+          <input class="u-input" [(ngModel)]="editingRequestType.title" name="title" /></label>
+        <label class="form-field"><span>الكود <span class="req">*</span></span>
+          <input class="u-input" [(ngModel)]="editingRequestType.code" name="code" /></label>
+        <label class="form-field"><span>ISO</span>
+          <input class="u-input" [(ngModel)]="editingRequestType.isoCode" name="isoCode" /></label>
+        <label class="form-field"><span>الشعار (URL)</span>
+          <input class="u-input" [(ngModel)]="editingRequestType.logo" name="logo" /></label>
+        <label class="form-field"><span>الوصف</span>
+          <textarea class="u-input" rows="3" [(ngModel)]="editingRequestType.description" name="description"></textarea></label>
+        <label class="check-row">
+          <input type="checkbox" [(ngModel)]="editingRequestType.isRequiredInnocent" name="innocent" />
+          <span>براءة الذمة مطلوبة</span>
+        </label>
+        <div class="toggle-row">
+          <span>نشط</span>
+          <p-toggleswitch [ngModel]="editingRequestType.active === 1" (ngModelChange)="setActiveFromToggle($event)" [ngModelOptions]="{ standalone: true }" />
+        </div>
+      </div>
+    }
+
+    @if (wizardStep === 2) {
+      <div class="grid-section">
+        <div class="grid-head">
+          <h3>حقول الخدمة</h3>
+          <button type="button" class="mini-add" (click)="addDetailRow()">+ إضافة صف</button>
+        </div>
+        <div class="grid-table-wrap">
+          <table class="grid-table">
+            <thead>
+              <tr>
+                <th>الاسم عربي <span class="req">*</span></th>
+                <th>الاسم إنجليزي <span class="req">*</span></th>
+                <th>نوع الحقل <span class="req">*</span></th>
+                <th>تكامل مطلوب</th>
+                <th>نوع التكامل</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (row of editingRequestType.requestDetails; track $index; let i = $index) {
+                <tr [class.row-invalid]="isDetailRowInvalid(i)">
+                  <td>
+                    <input class="u-input" type="text" [(ngModel)]="row.nameAr" [name]="'nameAr' + i" required placeholder="مثال: رقم الجواز" />
+                  </td>
+                  <td>
+                    <input class="u-input" type="text" [(ngModel)]="row.nameOt" [name]="'nameOt' + i" required placeholder="e.g. Passport Number" />
+                  </td>
+                  <td>
+                    <select class="u-input" [(ngModel)]="row.fieldType" [name]="'ft' + i" required>
+                      @for (opt of fieldTypeOptions; track opt.value) {
+                        <option [ngValue]="opt.value">{{ isArabic ? opt.labelAr : opt.labelOt }}</option>
+                      }
+                    </select>
+                  </td>
+                  <td class="center">
+                    <input
+                      type="checkbox"
+                      [ngModel]="row.isRequiredIntegration"
+                      (ngModelChange)="onIntegrationRequiredChange(row, $event)"
+                      [name]="'intReq' + i"
+                    />
+                  </td>
+                  <td>
+                    @if (row.isRequiredIntegration) {
+                      <select class="u-input" [(ngModel)]="row.integrationTypeId" [name]="'intType' + i" required>
+                        <option [ngValue]="null">—</option>
+                        @for (t of integrationTypes; track t.id) {
+                          <option [ngValue]="t.id">{{ t.name }}</option>
+                        }
+                      </select>
+                    } @else {
+                      <span class="muted">—</span>
+                    }
+                  </td>
+                  <td><button type="button" class="row-del" (click)="removeDetailRow(i)">حذف</button></td>
+                </tr>
+              } @empty {
+                <tr><td colspan="6" class="muted">لا توجد حقول — أضف صفاً.</td></tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+    }
+
+    @if (wizardStep === 3) {
+      <div class="grid-section">
+        <div class="grid-head">
+          <h3>مرفقات نوع الخدمة</h3>
+          <button type="button" class="mini-add" (click)="addAttachmentRow()">+ إضافة صف</button>
+        </div>
+        <div class="grid-table-wrap">
+          <table class="grid-table">
+            <thead>
+              <tr>
+                <th>الاسم عربي <span class="req">*</span></th>
+                <th>الاسم إنجليزي <span class="req">*</span></th>
+                <th>نوع المرفق <span class="req">*</span></th>
+                <th>مطلوب</th>
+                <th>متعدد</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (row of editingRequestType.requestTypeAttachments; track $index; let i = $index) {
+                <tr>
+                  <td>
+                    <input class="u-input" type="text" [(ngModel)]="row.nameAr" [name]="'attNameAr' + i" required placeholder="مثال: صورة الجواز" />
+                  </td>
+                  <td>
+                    <input class="u-input" type="text" [(ngModel)]="row.nameOt" [name]="'attNameOt' + i" required placeholder="e.g. Passport Copy" />
+                  </td>
+                  <td>
+                    <select class="u-input" [(ngModel)]="row.attachmentTypeId" [name]="'att' + i" required>
+                      <option [ngValue]="0" disabled hidden>اختر</option>
+                      @for (at of attachmentTypes; track at.id) {
+                        <option [ngValue]="at.id">{{ at.name }}</option>
+                      }
+                    </select>
+                  </td>
+                  <td class="center"><input type="checkbox" [(ngModel)]="row.isRequired" [name]="'req' + i" /></td>
+                  <td class="center"><input type="checkbox" [(ngModel)]="row.isMulti" [name]="'multi' + i" /></td>
+                  <td><button type="button" class="row-del" (click)="removeAttachmentRow(i)">حذف</button></td>
+                </tr>
+              } @empty {
+                <tr><td colspan="6" class="muted">لا توجد مرفقات — أضف صفاً.</td></tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+    }
+  </div>
+
+  <footer class="wizard-footer">
+    @if (wizardStep > 1) {
+      <button type="button" class="wizard-btn-back" (click)="prevWizardStep()">السابق</button>
+    }
+    <button type="button" class="cancel-btn" routerLink="/internal/request-types">إلغاء</button>
+    @if (wizardStep === 1) {
+      <button type="button" class="save-btn" [disabled]="!canSubmitStep1() || saving" (click)="submitStep1()">
+        {{ saving ? 'جاري الحفظ...' : 'التالي — حقول الخدمة' }}
+      </button>
+    }
+    @if (wizardStep === 2) {
+      <button type="button" class="save-btn" [disabled]="!canSubmitStep2() || saving" (click)="submitStep2()">
+        {{ saving ? 'جاري الحفظ...' : 'التالي — المرفقات' }}
+      </button>
+    }
+    @if (wizardStep === 3) {
+      <button type="button" class="save-btn primary-save" [disabled]="!canSubmitStep3() || saving" (click)="submitStep3()">
+        {{ saving ? 'جاري الحفظ...' : 'حفظ وإنهاء' }}
+      </button>
+    }
+  </footer>
+</section>

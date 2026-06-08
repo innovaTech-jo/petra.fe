@@ -72,7 +72,7 @@ export class ApplicationsComponent extends GceSoftBase implements OnInit {
     this.isModalOpen = false;
   }
 
-  getApplicationById(id: string | undefined): void {
+  getApplicationById(id: number | undefined): void {
     if (!id) return;
     this.applicationService.getById(id).subscribe({
       next: (app) => {

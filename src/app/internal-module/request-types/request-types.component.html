@@ -1,0 +1,122 @@
+@if (notificationService.toast(); as t) {
+  <div class="toast-banner" [class.error]="t.type === 'error'" role="status">
+    {{ t.text }}
+    <button type="button" class="toast-dismiss" (click)="notificationService.dismiss()">×</button>
+  </div>
+}
+
+<section class="rt-shell">
+  <app-page-header
+    eyebrow="خدمات"
+    title="أنواع الخدمات"
+    description="تعريف أنواع الخدمات مع الحقول والمرفقات وسير العمل."
+  >
+    <div class="app-page-header-toolbar">
+      <label class="search-field">
+        <span class="sr-only">بحث</span>
+        <input
+          type="search"
+          [value]="searchParameters.keyword ?? ''"
+          (input)="onSearchInput($event)"
+          placeholder="بحث بالعنوان أو الكود..."
+        />
+      </label>
+      <select class="filter-select" [(ngModel)]="activeFilter" (ngModelChange)="onActiveFilterChange()">
+        <option value="">كل الحالات</option>
+        <option value="1">نشط</option>
+        <option value="0">غير نشط</option>
+      </select>
+      @if (can(systemPermissions.AddRequestType)) {
+        <a class="add-user-btn" routerLink="/internal/request-types/new">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" /></svg>
+          <span>إضافة نوع خدمة</span>
+        </a>
+      }
+    </div>
+  </app-page-header>
+
+  <div class="users-card">
+    <div class="table-wrap">
+      <table class="app-data-table">
+        <thead>
+          <tr>
+            <th>العنوان</th>
+            <th>الكود</th>
+            <th>ISO</th>
+            <th>الحالة</th>
+            <th>براءة الذمة</th>
+            <th>سير العمل</th>
+            @if (can(systemPermissions.EditRequestType)) {
+              <th>إجراءات</th>
+            }
+          </tr>
+        </thead>
+        <tbody>
+          @if (loadingList) {
+            <tr>
+              <td [attr.colspan]="colCount()" class="empty-state">جاري التحميل...</td>
+            </tr>
+          } @else {
+            @for (row of allRequestTypes; track row.id) {
+              <tr>
+                <td data-label="العنوان">{{ row.title || '—' }}</td>
+                <td data-label="الكود">{{ row.code || '—' }}</td>
+                <td data-label="ISO">{{ row.isoCode || '—' }}</td>
+                <td data-label="الحالة">
+                  @if (row.active === 1) {
+                    <span class="status">نشط</span>
+                  } @else {
+                    <span class="status inactive">غير نشط</span>
+                  }
+                </td>
+                <td data-label="براءة">{{ row.isRequiredInnocent ? 'نعم' : 'لا' }}</td>
+                <td data-label="سير العمل">
+                  <div class="wf-cell">
+                    @if (hasWorkflow(row)) {
+                      <span class="wf-name">{{ workflowLabel(row) }}</span>
+                      @if (can(systemPermissions.EditWorkFlowDefinition)) {
+                        <a
+                          class="perm-btn"
+                          [routerLink]="['/internal/request-types', row.id, 'workflow']"
+                          [queryParams]="{ workflowId: row.workFlowDefinitionId }"
+                        >تعديل سير العمل</a>
+                      }
+                    } @else {
+                      <span class="muted">لم يُضف</span>
+                      @if (can(systemPermissions.AddWorkFlowDefinition)) {
+                        <a class="perm-btn" [routerLink]="['/internal/request-types', row.id, 'workflow']">إضافة سير عمل</a>
+                      }
+                    }
+                  </div>
+                </td>
+                @if (can(systemPermissions.EditRequestType)) {
+                  <td data-label="إجراءات">
+                    <div class="table-actions">
+                      <a class="edit-btn" [routerLink]="['/internal/request-types', row.id, 'edit']">تعديل</a>
+                      <button type="button" class="delete-btn" (click)="deleteRow(row)">حذف</button>
+                    </div>
+                  </td>
+                }
+              </tr>
+            } @empty {
+              <tr>
+                <td class="empty-state" [attr.colspan]="colCount()">لا توجد أنواع خدمات.</td>
+              </tr>
+            }
+          }
+        </tbody>
+      </table>
+    </div>
+
+    @if ((searchParameters.totalCount ?? 0) > 0) {
+      <app-list-pagination-bar
+        [totalCount]="searchParameters.totalCount ?? 0"
+        [pageNumber]="searchParameters.pagingParameters!.pageNumber ?? 1"
+        [pageSize]="searchParameters.pagingParameters!.pageSize ?? 10"
+        [pageSizeOptions]="pageSizeOptions"
+        (pageChange)="changePage($event)"
+        (pageSizeChange)="onPageSizeChange($event)"
+      />
+    }
+  </div>
+</section>

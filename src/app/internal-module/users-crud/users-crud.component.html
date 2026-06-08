@@ -9,15 +9,15 @@
   <app-page-header
     eyebrow="النظام والمستخدمون"
     title="إدارة المستخدمين"
-    description="خطوتان: بيانات المستخدم (القسم والتوقيع) ثم تعيين الأدوار. يظهر مدير القسم من تعريف الأقسام."
+    description="خطوتان: بيانات المستخدم ثم تعيين الأدوار."
   >
     <div class="app-page-header-toolbar">
       <span class="users-count">المستخدمون: {{ searchParameters.totalCount ?? 0 }}</span>
       @if (can(systemPermissions.AddUsers)) {
-        <button class="add-user-btn" type="button" (click)="showWizard()">
+        <a class="add-user-btn" routerLink="/internal/users/new">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" /></svg>
           <span>إضافة مستخدم</span>
-        </button>
+        </a>
       }
     </div>
   </app-page-header>
@@ -29,8 +29,7 @@
           <th>الاسم الكامل</th>
           <th>رمز المستخدم</th>
           <th>البريد الإلكتروني</th>
-          <th>القسم</th>
-          <th>مدير القسم</th>
+          <th>المدينة</th>
           <th>الحالة</th>
           @if (can(systemPermissions.EditUsers)) {
             <th>الاجراءات</th>
@@ -40,7 +39,7 @@
       <tbody>
         @if (loadingList) {
           <tr>
-            <td [attr.colspan]="can(systemPermissions.EditUsers) ? 7 : 6" class="empty-state">جاري التحميل...</td>
+            <td [attr.colspan]="can(systemPermissions.EditUsers) ? 6 : 5" class="empty-state">جاري التحميل...</td>
           </tr>
         } @else {
           @for (user of allUsers; track trackByUserId($index, user)) {
@@ -48,8 +47,7 @@
               <td data-label="الاسم الكامل">{{ user.fullName }}</td>
               <td data-label="رمز المستخدم">{{ user.userName }}</td>
               <td data-label="البريد الإلكتروني">{{ user.email || '—' }}</td>
-              <td data-label="القسم">{{ getDepartmentLabel(user.departmentId) }}</td>
-              <td data-label="مدير القسم">{{ getManagerLabelForUser(user) }}</td>
+              <td data-label="المدينة">{{ getCityLabel(user.cityId) }}</td>
               <td data-label="الحالة">
                 @if (user.active === 1) {
                   <span class="status">نشط</span>
@@ -60,14 +58,14 @@
               @if (can(systemPermissions.EditUsers)) {
                 <td data-label="الاجراءات">
                   <div class="table-actions">
-                    <button type="button" class="edit-btn" (click)="getUserById(user.id)">تعديل</button>
+                    <a class="edit-btn" [routerLink]="['/internal/users', user.id, 'edit']">تعديل</a>
                   </div>
                 </td>
               }
             </tr>
           } @empty {
             <tr>
-              <td class="empty-state" [attr.colspan]="can(systemPermissions.EditUsers) ? 7 : 6">
+              <td class="empty-state" [attr.colspan]="can(systemPermissions.EditUsers) ? 6 : 5">
                 لا يوجد مستخدمون مطابقون للبحث.
               </td>
             </tr>
@@ -88,276 +86,3 @@
     />
   }
 </section>
-
-@if (isWizardOpen) {
-  <div class="modal-overlay" (click)="closeWizard()">
-    <section class="user-modal wizard-modal" (click)="$event.stopPropagation()" dir="rtl">
-      <header class="modal-header">
-        <div class="modal-header-text">
-          <h3>{{ isWizardEditMode ? 'تعديل المستخدم' : 'مستخدم جديد' }}</h3>
-          <p class="modal-subtitle">
-            أدخل البيانات في الخطوتين: البيانات الشخصية والقسم والتوقيع، ثم عيّن الأدوار واحفظ. مدير القسم يُعرض من تعريف القسم.
-          </p>
-        </div>
-        <button class="modal-close" type="button" (click)="closeWizard()" aria-label="اغلاق">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18" /></svg>
-        </button>
-      </header>
-
-      <div class="wizard-steps wizard-steps-two">
-        <button
-          type="button"
-          class="wizard-step"
-          [class.active]="wizardStep === 1"
-          [class.completed]="wizardStep > 1"
-          (click)="goToWizardStep(1)"
-        >
-          <span class="step-number">1</span>
-          <span class="step-label">بيانات المستخدم</span>
-        </button>
-        <div class="wizard-connector" [class.completed]="wizardStep > 1"></div>
-        <button
-          type="button"
-          class="wizard-step"
-          [class.active]="wizardStep === 2"
-          (click)="goToWizardStep(2)"
-        >
-          <span class="step-number">2</span>
-          <span class="step-label">الأدوار</span>
-        </button>
-      </div>
-
-      <div class="wizard-body">
-        @if (wizardStep === 1) {
-          <div class="wizard-panel wizard-panel--voucher-style">
-            <label class="form-field full">
-              <span>الاسم الكامل <span class="req">*</span></span>
-              <input
-                class="u-input"
-                type="text"
-                name="wizardFullName"
-                [(ngModel)]="wizardUser.fullName"
-                (ngModelChange)="clearStep1Error('fullName')"
-                maxlength="50"
-                [class.input-invalid]="!!wizardStep1Errors['fullName']"
-              />
-              @if (wizardStep1Errors['fullName']) {
-                <small class="field-msg field-msg--error">{{ wizardStep1Errors['fullName'] }}</small>
-              }
-            </label>
-            <label class="form-field">
-              <span>رمز المستخدم <span class="req">*</span></span>
-              <input
-                class="u-input"
-                type="text"
-                name="wizardUserName"
-                [(ngModel)]="wizardUser.userName"
-                (ngModelChange)="clearStep1Error('userName')"
-                maxlength="50"
-                [class.input-invalid]="!!wizardStep1Errors['userName']"
-              />
-              @if (wizardStep1Errors['userName']) {
-                <small class="field-msg field-msg--error">{{ wizardStep1Errors['userName'] }}</small>
-              }
-            </label>
-            <label class="form-field">
-              <span>البريد الإلكتروني <span class="req">*</span></span>
-              <input
-                class="u-input"
-                type="email"
-                name="wizardEmail"
-                [(ngModel)]="wizardUser.email"
-                (ngModelChange)="clearStep1Error('email')"
-                pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}"
-                [class.input-invalid]="!!wizardStep1Errors['email']"
-              />
-              @if (wizardStep1Errors['email']) {
-                <small class="field-msg field-msg--error">{{ wizardStep1Errors['email'] }}</small>
-              }
-            </label>
-            @if (!isWizardEditMode) {
-              <label class="form-field full">
-                <span>كلمة المرور <span class="req">*</span></span>
-                <input
-                  class="u-input"
-                  type="password"
-                  name="wizardPassword"
-                  [(ngModel)]="wizardUser.password"
-                  (ngModelChange)="onWizardPasswordChange(); clearStep1Error('password')"
-                  (blur)="onWizardPasswordBlur()"
-                  maxlength="100"
-                  [class.input-invalid]="!!wizardStep1Errors['password'] || isWizardPasswordInvalid()"
-                />
-                @if (wizardStep1Errors['password']) {
-                  <small class="field-msg field-msg--error">{{ wizardStep1Errors['password'] }}</small>
-                } @else if (isWizardPasswordInvalid()) {
-                  <small>تأكد من تعقيد كلمة المرور (8 أحرف، حرف كبير وصغير، رقم، رمز).</small>
-                }
-                @if (wizardUser.password && wizardPasswordStrength > 0) {
-                  <div class="password-meter">
-                    <div class="password-meter-labels">
-                      <span>القوة</span>
-                      <span [class]="wizardPasswordStrengthColor">{{ strengthLabel(wizardPasswordStrengthLevel) }}</span>
-                    </div>
-                    <div class="password-meter-bar">
-                      <span [style.width.%]="wizardPasswordStrength"></span>
-                    </div>
-                  </div>
-                }
-              </label>
-            }
-            @if (isWizardEditMode) {
-              <label class="form-field full">
-                <span>كلمة مرور جديدة (اختياري)</span>
-                <input
-                  class="u-input"
-                  type="password"
-                  name="wizardNewPassword"
-                  [(ngModel)]="wizardUser.newPassword"
-                  (ngModelChange)="onWizardNewPasswordChange(); clearStep1Error('newPassword')"
-                  (blur)="onWizardNewPasswordBlur()"
-                  maxlength="100"
-                  [class.input-invalid]="!!wizardStep1Errors['newPassword'] || isWizardNewPasswordInvalid()"
-                />
-                @if (wizardStep1Errors['newPassword']) {
-                  <small class="field-msg field-msg--error">{{ wizardStep1Errors['newPassword'] }}</small>
-                } @else if (isWizardNewPasswordInvalid()) {
-                  <small>تأكد من تعقيد كلمة المرور.</small>
-                }
-                @if (wizardUser.newPassword && wizardNewPasswordStrength > 0) {
-                  <div class="password-meter">
-                    <div class="password-meter-labels">
-                      <span>القوة</span>
-                      <span [class]="wizardNewPasswordStrengthColor">{{
-                        strengthLabel(wizardNewPasswordStrengthLevel)
-                      }}</span>
-                    </div>
-                    <div class="password-meter-bar">
-                      <span [style.width.%]="wizardNewPasswordStrength"></span>
-                    </div>
-                  </div>
-                }
-              </label>
-              <div class="form-field full wizard-active-toggle-wrap">
-                <div class="wizard-role-row wizard-active-toggle-row">
-                  <span class="wizard-role-label">الحساب نشط</span>
-                  <p-toggleswitch
-                    inputId="wizard-user-active"
-                    [ngModel]="wizardUser.active === 1"
-                    (ngModelChange)="setWizardActiveFromToggle($event)"
-                    styleClass="wizard-role-switch"
-                  />
-                </div>
-              </div>
-            }
-
-            <label class="form-field field-select" [class.field-select--error]="!!wizardStep1Errors['departmentId']">
-              <span>القسم <span class="req">*</span></span>
-              <p-select
-                [(ngModel)]="wizardUser.departmentId"
-                name="wizardDepartment"
-                [options]="departmentSelectOptions"
-                optionLabel="label"
-                optionValue="id"
-                placeholder="اختر القسم"
-                [filter]="true"
-                filterBy="label"
-                filterPlaceholder="بحث..."
-                emptyFilterMessage="لا توجد نتائج"
-                appendTo="body"
-                panelStyleClass="tv-select-overlay"
-                styleClass="users-p-select users-p-select--primary"
-                [fluid]="true"
-                inputId="wizard-department"
-                [showClear]="true"
-                (ngModelChange)="clearStep1Error('departmentId')"
-              />
-              @if (wizardStep1Errors['departmentId']) {
-                <small class="field-msg field-msg--error">{{ wizardStep1Errors['departmentId'] }}</small>
-              }
-              @if (wizardUser.departmentId?.trim()) {
-                <p class="dept-manager-readonly muted">{{ getWizardDepartmentManagerHint() }}</p>
-              }
-            </label>
-
-            <div class="form-field full signature-field">
-              <span>صورة التوقيع</span>
-              <div class="signature-upload">
-                <input
-                  #signatureFileInput
-                  type="file"
-                  id="wizard-signature-file"
-                  class="sr-only"
-                  accept="image/png,image/jpeg,image/webp,image/gif"
-                  (change)="onSignatureFileSelected($event)"
-                />
-                <label for="wizard-signature-file" class="signature-dropzone">
-                  <span class="signature-dropzone-icon" aria-hidden="true">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
-                      <rect x="3" y="3" width="18" height="18" rx="3" />
-                      <path d="M8 14l2.5-3 3.5 4.5L19 10" stroke-linecap="round" stroke-linejoin="round" />
-                      <circle cx="8.5" cy="8.5" r="1.5" fill="currentColor" stroke="none" />
-                    </svg>
-                  </span>
-                  <span class="signature-dropzone-title">رفع صورة التوقيع</span>
-                  <span class="signature-dropzone-hint">اسحب الصورة هنا أو اضغط للاختيار — PNG أو JPG</span>
-                </label>
-                @if (wizardUser.signatureImageBase64) {
-                  <button type="button" class="signature-remove-btn" (click)="clearSignatureImage()">إزالة الصورة</button>
-                }
-              </div>
-              @if (signaturePreviewUrl) {
-                <div class="signature-preview">
-                  <img [src]="signaturePreviewUrl" alt="معاينة التوقيع" />
-                </div>
-              }
-            </div>
-          </div>
-        }
-
-        @if (wizardStep === 2) {
-          <div class="wizard-panel wizard-panel--roles">
-          <div class="wizard-roles-panel">
-            <div class="wizard-roles-head">
-              <h4 class="wizard-roles-title">أدوار المستخدم</h4>
-              <p class="wizard-roles-hint">فعّل كل دور ينطبق على هذا الحساب.</p>
-            </div>
-            <ul class="wizard-roles-list">
-              @for (p of roles; track p.id) {
-                <li class="wizard-role-row">
-                  <span class="wizard-role-label">{{ isArabic ? p.nameAr : p.nameOt }}</span>
-                  <p-toggleswitch
-                    [inputId]="'wiz-role-' + p.id"
-                    [ngModel]="isWizardRoleOn(p.id)"
-                    (ngModelChange)="onWizardRoleToggle(p.id, $event)"
-                    [disabled]="p.active === 0"
-                    styleClass="wizard-role-switch"
-                  />
-                </li>
-              } @empty {
-                <li class="wizard-roles-empty muted">لا توجد أدوار متاحة.</li>
-              }
-            </ul>
-          </div>
-          </div>
-        }
-
-      </div>
-
-      <footer class="wizard-footer">
-        @if (wizardStep > 1) {
-          <button type="button" class="wizard-btn-back" (click)="prevWizardStep()">السابق</button>
-        }
-        <button type="button" class="cancel-btn" (click)="closeWizard()">إلغاء</button>
-        @if (wizardStep === 1) {
-          <button type="button" class="save-btn" (click)="nextWizardStep()">التالي — الأدوار</button>
-        }
-        @if (wizardStep === 2) {
-          <button type="button" class="save-btn primary-save" (click)="saveWizard()" [disabled]="wizardSaving">
-            {{ wizardSaving ? 'جاري الحفظ...' : 'حفظ المستخدم' }}
-          </button>
-        }
-      </footer>
-    </section>
-  </div>
-}

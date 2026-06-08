@@ -34,7 +34,7 @@ export class ApiBaseService {
     ).pipe(map((res) => this.unwrap(res)));
   }
 
-  protected getEntityById<T>(entityPath: string, id: string): Observable<T> {
+  protected getEntityById<T>(entityPath: string, id: number | string): Observable<T> {
     return this.withProgress(this.http.get<InnovaResponse<T>>(`${this.baseUrl}/${entityPath}/${id}`)).pipe(
       map((res) => this.unwrap(res))
     );
@@ -58,7 +58,7 @@ export class ApiBaseService {
     ).pipe(map((res) => this.unwrap(res)));
   }
 
-  protected deleteEntity(entityPath: string, id: string): Observable<boolean> {
+  protected deleteEntity(entityPath: string, id: number | string): Observable<boolean> {
     return this.withProgress(
       this.http.get<InnovaResponse<boolean>>(`${this.baseUrl}/${entityPath}/delete/${id}`)
     ).pipe(map((res) => this.unwrap(res)));

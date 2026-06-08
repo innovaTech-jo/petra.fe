@@ -1,0 +1,206 @@
+@if (notificationService.toast(); as t) {
+  <div class="toast-banner" [class.error]="t.type === 'error'" role="status">
+    {{ t.text }}
+    <button type="button" class="toast-dismiss" (click)="notificationService.dismiss()">×</button>
+  </div>
+}
+
+<section class="user-form-page" dir="rtl">
+  <header class="form-page-header">
+    <div class="form-page-header-text">
+      <a class="back-link" routerLink="/internal/users">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m14 7-5 5 5 5M19 12H9" /></svg>
+        <span>رجوع للقائمة</span>
+      </a>
+      <h1>{{ isEditMode ? 'تعديل المستخدم' : 'مستخدم جديد' }}</h1>
+      <p class="form-page-subtitle">
+        أدخل بيانات المستخدم في الخطوة الأولى، ثم عيّن الأدوار واحفظ.
+      </p>
+    </div>
+  </header>
+
+  <div class="wizard-steps wizard-steps-two">
+    <button
+      type="button"
+      class="wizard-step"
+      [class.active]="wizardStep === 1"
+      [class.completed]="wizardStep > 1"
+      (click)="goToWizardStep(1)"
+    >
+      <span class="step-number">1</span>
+      <span class="step-label">بيانات المستخدم</span>
+    </button>
+    <div class="wizard-connector" [class.completed]="wizardStep > 1"></div>
+    <button type="button" class="wizard-step" [class.active]="wizardStep === 2" (click)="goToWizardStep(2)">
+      <span class="step-number">2</span>
+      <span class="step-label">الأدوار</span>
+    </button>
+  </div>
+
+  <div class="wizard-body">
+    @if (wizardStep === 1) {
+      <div class="wizard-panel wizard-panel--voucher-style">
+        <label class="form-field full">
+          <span>الاسم الكامل <span class="req">*</span></span>
+          <input
+            class="u-input"
+            type="text"
+            name="wizardFullName"
+            [(ngModel)]="formUser.fullName"
+            (ngModelChange)="clearStep1Error('fullName')"
+            maxlength="50"
+            [class.input-invalid]="!!step1Errors['fullName']"
+          />
+          @if (step1Errors['fullName']) {
+            <small class="field-msg field-msg--error">{{ step1Errors['fullName'] }}</small>
+          }
+        </label>
+        <label class="form-field">
+          <span>رمز المستخدم <span class="req">*</span></span>
+          <input
+            class="u-input"
+            type="text"
+            name="wizardUserName"
+            [(ngModel)]="formUser.userName"
+            (ngModelChange)="clearStep1Error('userName')"
+            maxlength="50"
+            [class.input-invalid]="!!step1Errors['userName']"
+          />
+          @if (step1Errors['userName']) {
+            <small class="field-msg field-msg--error">{{ step1Errors['userName'] }}</small>
+          }
+        </label>
+        <label class="form-field">
+          <span>البريد الإلكتروني <span class="req">*</span></span>
+          <input
+            class="u-input"
+            type="email"
+            name="wizardEmail"
+            [(ngModel)]="formUser.email"
+            (ngModelChange)="clearStep1Error('email')"
+            pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}"
+            [class.input-invalid]="!!step1Errors['email']"
+          />
+          @if (step1Errors['email']) {
+            <small class="field-msg field-msg--error">{{ step1Errors['email'] }}</small>
+          }
+        </label>
+        @if (!isEditMode) {
+          <label class="form-field full">
+            <span>كلمة المرور <span class="req">*</span></span>
+            <input
+              class="u-input"
+              type="password"
+              name="wizardPassword"
+              [(ngModel)]="formUser.password"
+              (ngModelChange)="onPasswordChange(); clearStep1Error('password')"
+              (blur)="onPasswordBlur()"
+              maxlength="100"
+              [class.input-invalid]="!!step1Errors['password'] || isPasswordInvalid()"
+            />
+            @if (step1Errors['password']) {
+              <small class="field-msg field-msg--error">{{ step1Errors['password'] }}</small>
+            } @else if (isPasswordInvalid()) {
+              <small>تأكد من تعقيد كلمة المرور (8 أحرف، حرف كبير وصغير، رقم، رمز).</small>
+            }
+            @if (formUser.password && passwordStrength > 0) {
+              <div class="password-meter">
+                <div class="password-meter-labels">
+                  <span>القوة</span>
+                  <span [class]="passwordStrengthColor">{{ strengthLabel(passwordStrengthLevel) }}</span>
+                </div>
+                <div class="password-meter-bar">
+                  <span [style.width.%]="passwordStrength"></span>
+                </div>
+              </div>
+            }
+          </label>
+        }
+        @if (isEditMode) {
+          <label class="form-field full">
+            <span>كلمة مرور جديدة (اختياري)</span>
+            <input
+              class="u-input"
+              type="password"
+              name="wizardNewPassword"
+              [(ngModel)]="formUser.newPassword"
+              (ngModelChange)="onNewPasswordChange(); clearStep1Error('newPassword')"
+              (blur)="onNewPasswordBlur()"
+              maxlength="100"
+              [class.input-invalid]="!!step1Errors['newPassword'] || isNewPasswordInvalid()"
+            />
+            @if (step1Errors['newPassword']) {
+              <small class="field-msg field-msg--error">{{ step1Errors['newPassword'] }}</small>
+            } @else if (isNewPasswordInvalid()) {
+              <small>تأكد من تعقيد كلمة المرور.</small>
+            }
+            @if (formUser.newPassword && newPasswordStrength > 0) {
+              <div class="password-meter">
+                <div class="password-meter-labels">
+                  <span>القوة</span>
+                  <span [class]="newPasswordStrengthColor">{{ strengthLabel(newPasswordStrengthLevel) }}</span>
+                </div>
+                <div class="password-meter-bar">
+                  <span [style.width.%]="newPasswordStrength"></span>
+                </div>
+              </div>
+            }
+          </label>
+          <div class="form-field full wizard-active-toggle-wrap">
+            <div class="wizard-role-row wizard-active-toggle-row">
+              <span class="wizard-role-label">الحساب نشط</span>
+              <p-toggleswitch
+                inputId="form-user-active"
+                [ngModel]="formUser.active === 1"
+                (ngModelChange)="setActiveFromToggle($event)"
+                styleClass="wizard-role-switch"
+              />
+            </div>
+          </div>
+        }
+      </div>
+    }
+
+    @if (wizardStep === 2) {
+      <div class="wizard-panel wizard-panel--roles">
+        <div class="wizard-roles-panel">
+          <div class="wizard-roles-head">
+            <h4 class="wizard-roles-title">أدوار المستخدم</h4>
+            <p class="wizard-roles-hint">فعّل كل دور ينطبق على هذا الحساب.</p>
+          </div>
+          <ul class="wizard-roles-list">
+            @for (p of roles; track p.id) {
+              <li class="wizard-role-row">
+                <span class="wizard-role-label">{{ isArabic ? p.nameAr : p.nameOt }}</span>
+                <p-toggleswitch
+                  [inputId]="'form-role-' + p.id"
+                  [ngModel]="isRoleOn(p.id)"
+                  (ngModelChange)="onRoleToggle(p.id, $event)"
+                  [disabled]="p.active === 0"
+                  styleClass="wizard-role-switch"
+                />
+              </li>
+            } @empty {
+              <li class="wizard-roles-empty muted">لا توجد أدوار متاحة.</li>
+            }
+          </ul>
+        </div>
+      </div>
+    }
+  </div>
+
+  <footer class="wizard-footer">
+    @if (wizardStep > 1) {
+      <button type="button" class="wizard-btn-back" (click)="prevWizardStep()">السابق</button>
+    }
+    <button type="button" class="cancel-btn" routerLink="/internal/users">إلغاء</button>
+    @if (wizardStep === 1) {
+      <button type="button" class="save-btn" (click)="nextWizardStep()">التالي — الأدوار</button>
+    }
+    @if (wizardStep === 2) {
+      <button type="button" class="save-btn primary-save" (click)="save()" [disabled]="saving">
+        {{ saving ? 'جاري الحفظ...' : 'حفظ المستخدم' }}
+      </button>
+    }
+  </footer>
+</section>

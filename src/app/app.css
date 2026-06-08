@@ -120,14 +120,6 @@
   background: linear-gradient(135deg, #fbbf24, var(--app-primary));
 }
 
-.splash-title {
-  margin: 16px 0 6px;
-  letter-spacing: 2px;
-  color: color-mix(in srgb, var(--app-primary) 72%, #1c1917);
-  font-size: 0.98rem;
-  font-weight: 800;
-}
-
 .splash-subtitle {
   margin: 0 0 16px;
   color: #78716c;

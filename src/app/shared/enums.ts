@@ -1,20 +1,39 @@
-/** Screen permission GUIDs from Petra API (backend spelling: permssions). */
+/** Permission id — numeric ids from Petra.BE Permssions.cs */
+export type PermissionId = number | string;
+
+/** Screen permissions from Petra API (backend spelling: permssions). */
 export const Permissions = {
-  Users: '290e16c2-a7b1-4d0b-b3f3-0f57a7c01d4b',
-  AddUsers: '3968aa5a-3e35-46c0-8641-117d9b597ec8',
-  EditUsers: '0f2791a2-19fb-4a18-8a98-137475022d0b',
-  Roles: '0c77a6e3-0940-4e69-8f74-2bcf509ad362',
-  UserRoles: '0c77a6e3-0940-4e69-8f74-2bcf509ad362',
-  AddUserRoles: '519d7649-4ada-4165-93b8-3e0bb6b0821b',
-  EditUserRoles: '8c008721-154b-4b45-b6ef-45c29612190e',
-  AssignedPrivilages: '8eb26e43-b8b1-4b3d-8f21-486e64438347',
-  Groups: '009c98bc-0bc5-4c31-9e1b-48e48446e875',
-  Applications: '55fb1d9e-3d83-455b-be7a-5674365bfd15',
-  AddApks: '3be80f97-c1e7-4426-b75c-84dc4f96d9c9',
-  EditApks: 'a66cb3d5-abfb-4693-8147-85359613adcd',
-  Settings: 'a4985efa-61e6-4007-bdeb-8f683c364755',
-  EditSettings: '9bf678b6-7b31-459f-a21d-95aa3eaad8e1',
-  Notifications: 'b1e6d375-43fa-4d49-8e72-9709248e0d6c'
+  Users: 1,
+  AddUsers: 2,
+  EditUsers: 3,
+  AssignedRoles: 4,
+  AssignedGroups: 5,
+  UserRoles: 7,
+  AddUserRoles: 8,
+  EditUserRoles: 9,
+  AssignedPrivilages: 10,
+  Roles: 7,
+  Groups: 11,
+  Applications: 12,
+  AddApks: 13,
+  EditApks: 14,
+  Settings: 15,
+  EditSettings: 16,
+  Notifications: 17,
+  RequestType: 42,
+  AddRequestType: 43,
+  EditRequestType: 44,
+  IntegrationType: 45,
+  AddIntegrationType: 46,
+  EditIntegrationType: 47,
+  AttachmentType: 48,
+  AddAttachmentType: 49,
+  EditAttachmentType: 50,
+  RequestDetail: 51,
+  RequestTypeAttachment: 52,
+  WorkFlowDefinition: 53,
+  AddWorkFlowDefinition: 54,
+  EditWorkFlowDefinition: 55
 } as const;
 
 export const SettingValueType = {

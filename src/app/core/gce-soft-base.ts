@@ -1,6 +1,6 @@
 import { SearchParameters } from './models';
 import { UsersDto } from './models';
-import { Permissions } from '../shared/enums';
+import { Permissions, PermissionId } from '../shared/enums';
 import { AuthService } from './services/auth.service';
 import { inject } from '@angular/core';
 
@@ -20,12 +20,12 @@ export class GceSoftBase {
     return this.auth.readSession();
   }
 
-  get permissions(): string[] {
+  get permissions(): number[] {
     return this.auth.permissions;
   }
 
-  get currentUserId(): string {
-    return this.currentUser?.id ?? '';
+  get currentUserId(): number {
+    return this.currentUser?.id ?? 0;
   }
 
   get requesterDisplayName(): string {
@@ -36,7 +36,7 @@ export class GceSoftBase {
     return (localStorage.getItem('selectedLanguage') ?? 'ar') === 'ar';
   }
 
-  can(permission: string): boolean {
+  can(permission: PermissionId): boolean {
     return this.auth.hasPermission(permission);
   }
 

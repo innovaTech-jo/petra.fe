@@ -13,10 +13,10 @@
   >
     <div class="app-page-header-toolbar">
       @if (can(systemPermissions.AddUserRoles)) {
-        <button type="button" class="add-user-btn" (click)="showCreateModal()">
+        <a class="add-user-btn" routerLink="/internal/user-roles/new">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" /></svg>
           <span>إضافة دور</span>
-        </button>
+        </a>
       }
     </div>
   </app-page-header>
@@ -59,23 +59,25 @@
                 @if (can(systemPermissions.EditUserRoles)) {
                   <td data-label="تعديل">
                     <div class="table-actions">
-                      <button type="button" class="edit-btn" (click)="getRoleById(role.id)">تعديل</button>
+                      <a class="edit-btn" [routerLink]="['/internal/user-roles', role.id, 'edit']">تعديل</a>
                     </div>
                   </td>
                 }
                 @if (can(systemPermissions.AssignedPrivilages)) {
                   <td data-label="صلاحيات">
                     <div class="table-actions">
-                      <button type="button" class="perm-btn" (click)="openRolePermissions(role)">إدارة</button>
+                      <a
+                        class="perm-btn"
+                        [routerLink]="['/internal/user-roles', role.id, 'edit']"
+                        [queryParams]="{ step: 2 }"
+                      >إدارة</a>
                     </div>
                   </td>
                 }
               </tr>
             } @empty {
               <tr>
-                <td class="empty-state" [attr.colspan]="colCount()">
-                  لا توجد أدوار.
-                </td>
+                <td class="empty-state" [attr.colspan]="colCount()">لا توجد أدوار.</td>
               </tr>
             }
           }
@@ -95,169 +97,3 @@
     }
   </div>
 </section>
-
-@if (isRoleWizardOpen) {
-  <div class="modal-overlay" (click)="closeRoleWizard()">
-    <section class="user-modal ur-wizard-modal" (click)="$event.stopPropagation()" dir="rtl">
-      <header class="modal-header">
-        <div class="modal-header-text">
-          <h3>
-            @if (roleWizardStep === 1) {
-              {{ editingRole.id ? 'تعديل الدور' : 'دور جديد' }}
-            } @else {
-              صلاحيات الدور
-            }
-          </h3>
-          <p class="modal-subtitle">
-            @if (roleWizardStep === 1) {
-              أدخل الاسم بالعربية والإنجليزية، ثم انتقل لاختيار صلاحيات كل شاشة من القائمة.
-            } @else {
-              لكل شاشة: فعّل إنشاء، تعديل، أو استعلام حسب ما يعرضه النظام من الخادم.
-            }
-          </p>
-        </div>
-        <button class="modal-close" type="button" (click)="closeRoleWizard()" aria-label="اغلاق">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18" /></svg>
-        </button>
-      </header>
-
-      <div class="ur-wizard-steps">
-        <button
-          type="button"
-          class="ur-wizard-step"
-          [class.active]="roleWizardStep === 1"
-          [class.completed]="roleWizardStep === 2"
-          (click)="goToRoleWizardStep(1)"
-        >
-          <span class="ur-step-num">1</span>
-          <span class="ur-step-label">بيانات الدور</span>
-        </button>
-        <div class="ur-wizard-connector" [class.done]="roleWizardStep === 2"></div>
-        <button
-          type="button"
-          class="ur-wizard-step"
-          [class.active]="roleWizardStep === 2"
-          [disabled]="!editingRole.id"
-          (click)="goToRoleWizardStep(2)"
-        >
-          <span class="ur-step-num">2</span>
-          <span class="ur-step-label">الصلاحيات</span>
-        </button>
-      </div>
-
-      @if (roleWizardStep === 1) {
-        <form #roleForm="ngForm" class="ur-step-form">
-          <label class="form-field full">
-            <span>الوصف بالعربية <span class="req">*</span></span>
-            <input
-              type="text"
-              [(ngModel)]="editingRole.nameAr"
-              required
-              name="nameAr"
-              [maxlength]="configurationMaxLength"
-            />
-          </label>
-          <label class="form-field full">
-            <span>الوصف بالإنجليزية <span class="req">*</span></span>
-            <input
-              type="text"
-              [(ngModel)]="editingRole.nameOt"
-              required
-              name="nameOt"
-              [maxlength]="configurationMaxLength"
-            />
-          </label>
-          <div class="form-field full ur-active-toggle-wrap">
-            <div class="ur-toggle-row">
-              <span class="ur-toggle-label">الدور نشط</span>
-              <p-toggleswitch
-                inputId="ur-role-active"
-                [ngModel]="editingRole.active === 1"
-                (ngModelChange)="setRoleActiveFromToggle($event)"
-                [ngModelOptions]="{ standalone: true }"
-                styleClass="ur-role-switch"
-              />
-            </div>
-          </div>
-
-          <footer class="ur-wizard-footer">
-            <button type="button" class="cancel-btn" (click)="closeRoleWizard()">إلغاء</button>
-            <button
-              type="button"
-              class="save-btn ur-next-btn"
-              [disabled]="!isRoleFormReady(roleForm) || roleWizardSaving"
-              (click)="submitRoleStep1(roleForm)"
-            >
-              {{ roleWizardSaving ? 'جاري الحفظ...' : 'التالي — الصلاحيات' }}
-            </button>
-          </footer>
-        </form>
-      }
-
-      @if (roleWizardStep === 2) {
-        <div class="ur-step-privileges">
-          <div class="ur-priv-tree-panel">
-            <div class="ur-priv-tree-head">
-              <span class="ur-priv-tree-title">اختر الصلاحيات</span>
-              <span class="ur-priv-tree-hint">استخدم مربعات الاختيار — يمكن طيّ أو توسيع كل شاشة.</span>
-            </div>
-            <div class="priv-tree ur-priv-tree">
-              @if (privilegeTreePrime.length) {
-                <p-tree
-                  [value]="privilegeTreePrime"
-                  selectionMode="checkbox"
-                  [metaKeySelection]="false"
-                  [propagateSelectionUp]="true"
-                  [propagateSelectionDown]="true"
-                  [selection]="privilegeTreeSelection"
-                  (selectionChange)="onPrivilegeTreeSelectionChanged($event)"
-                  [highlightOnSelect]="true"
-                  scrollHeight="flex"
-                  styleClass="ur-p-tree"
-                  emptyMessage="لا توجد صلاحيات للعرض."
-                >
-                  <ng-template #node let-node>
-                    @if (node.data?.privilege; as priv) {
-                      <span class="ur-tree-node-inner">
-                        @if (node.data.isRoot) {
-                          <span class="priv-screen-title ur-tree-root-label">{{ node.label }}</span>
-                        } @else {
-                          <span
-                            class="ur-tree-leaf-label"
-                            [class.other]="privilegeActionKind(priv) === 'other'"
-                          >
-                            {{ privilegeActionLabelAr(privilegeActionKind(priv)) }}
-                            @if (node.data.parentScreenLabel) {
-                              <span class="ur-tree-leaf-sep"> — </span>
-                            }
-                          </span>
-                        }
-                      </span>
-                    } @else {
-                      <span>{{ node.label }}</span>
-                    }
-                  </ng-template>
-                </p-tree>
-              } @else {
-                <p class="muted ur-tree-empty-msg">لا توجد صلاحيات للعرض.</p>
-              }
-            </div>
-          </div>
-
-          <footer class="ur-wizard-footer">
-            <button type="button" class="ghost-back-btn" (click)="prevRoleWizardStep()">السابق</button>
-            <button type="button" class="cancel-btn" (click)="closeRoleWizard()">إلغاء</button>
-            <button
-              type="button"
-              class="save-btn primary-save"
-              [disabled]="roleWizardSaving"
-              (click)="saveSystemUserPrivilege()"
-            >
-              {{ roleWizardSaving ? 'جاري الحفظ...' : 'حفظ الصلاحيات' }}
-            </button>
-          </footer>
-        </div>
-      }
-    </section>
-  </div>
-}

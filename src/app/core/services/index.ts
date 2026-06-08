@@ -7,3 +7,8 @@ export * from './application.service';
 export * from './notification-api.service';
 export * from './privilege.service';
 export * from './setting.service';
+export * from './integration-type.service';
+export * from './attachment-type.service';
+export * from './request-type.service';
+export * from './workflow-definition.service';
+export * from './user-role.service';

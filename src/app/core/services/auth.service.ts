@@ -11,7 +11,7 @@ export class AuthService {
 
   readonly sessionUser = signal<UsersDto | null>(this.readSession());
 
-  get permissions(): string[] {
+  get permissions(): number[] {
     return this.sessionUser()?.permssions ?? [];
   }
 
@@ -19,16 +19,22 @@ export class AuthService {
     return this.sessionUser()?.token;
   }
 
-  hasPermission(guid: string): boolean {
+  hasPermission(id: number | string): boolean {
     const perms = this.permissions;
     if (!perms.length) return true;
-    return perms.includes(guid);
+    return perms.some((p) => p === id || String(p) === String(id));
   }
 
   login(request: LoginRequest): Observable<UsersDto> {
     return this.api.postAnonymous<LoginRequest, UsersDto>('User/login', request).pipe(
       tap((user) => this.persistSession(user))
     );
+  }
+
+  /** Offline demo login — no API call. */
+  loginOffline(user: UsersDto): UsersDto {
+    this.persistSession(user);
+    return user;
   }
 
   logout(): void {
@@ -54,7 +60,7 @@ export class AuthService {
     return !!this.token;
   }
 
-  updateSessionPermissions(permssions: string[]): void {
+  updateSessionPermissions(permssions: number[]): void {
     const current = this.readSession();
     if (!current) return;
     const next = { ...current, permssions };

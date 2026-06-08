@@ -34,9 +34,11 @@
         <p class="logo-sub">لوحة الإدارة</p>
       </div>
 
-      @if (sessionDisplayName()) {
-        <p class="sidebar-user">{{ sessionDisplayName() }}</p>
-      }
+      <div class="sidebar-user-row">
+        @if (sessionDisplayName()) {
+          <span class="content-user-name">{{ sessionDisplayName() }}</span>
+        }
+      </div>
 
       <nav class="menu-list" aria-label="القائمة الرئيسية">
         <a
@@ -46,52 +48,41 @@
           [routerLinkActiveOptions]="{ exact: true }"
           (click)="closeMenu()"
         >
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12 12 4l8 8v8H4z" /></svg>
           <span>الرئيسية</span>
         </a>
 
-        @if (can(permissions.Users)) {
-          <a class="menu-item" routerLink="/internal/users" routerLinkActive="active" (click)="closeMenu()">
-            <span>المستخدمون</span>
-          </a>
-        }
-
-        @if (can(permissions.Roles)) {
-          <a class="menu-item" routerLink="/internal/user-roles" routerLinkActive="active" (click)="closeMenu()">
-            <span>الأدوار</span>
-          </a>
-        }
-
-        @if (can(permissions.Groups)) {
-          <a class="menu-item" routerLink="/internal/groups" routerLinkActive="active" (click)="closeMenu()">
-            <span>المجموعات</span>
-          </a>
-        }
-
-        @if (can(permissions.Applications)) {
-          <a class="menu-item" routerLink="/internal/applications" routerLinkActive="active" (click)="closeMenu()">
-            <span>التطبيقات</span>
-          </a>
-        }
-
-        @if (can(permissions.Notifications)) {
-          <a class="menu-item" routerLink="/internal/notifications" routerLinkActive="active" (click)="closeMenu()">
-            <span>الإشعارات</span>
-          </a>
-        }
-
-        @if (can(permissions.Settings)) {
-          <a class="menu-item" routerLink="/internal/settings" routerLinkActive="active" (click)="closeMenu()">
-            <span>الإعدادات</span>
-          </a>
-        }
-
-        <a class="menu-item" routerLink="/external" (click)="closeMenu()">
-          <span>البوابة الخارجية</span>
+        <a class="menu-item" routerLink="/internal/users" routerLinkActive="active" (click)="closeMenu()">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16" /></svg>
+          <span>المستخدمون</span>
         </a>
 
-        <button type="button" class="menu-item menu-button" (click)="logout(); closeMenu()">
+        <a class="menu-item" routerLink="/internal/user-roles" routerLinkActive="active" (click)="closeMenu()">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 11a4 4 0 1 0-4-4 4 4 0 0 0 4 4Z" /><path d="M4 20a8 8 0 0 1 16 0" /></svg>
+          <span>أدوار المستخدمين</span>
+        </a>
+
+        <p class="nav-section">خدمات</p>
+
+        <a class="menu-item" routerLink="/internal/request-types" routerLinkActive="active" (click)="closeMenu()">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h10M4 18h14" /></svg>
+          <span>أنواع الخدمات</span>
+        </a>
+
+        <a class="menu-item" routerLink="/internal/integration-types" routerLinkActive="active" (click)="closeMenu()">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v18M3 12h18" /></svg>
+          <span>أنواع التكامل</span>
+        </a>
+
+        <a class="menu-item" routerLink="/internal/attachment-types" routerLinkActive="active" (click)="closeMenu()">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><path d="M14 2v6h6" /></svg>
+          <span>أنواع المرفقات</span>
+        </a>
+
+        <a class="menu-item" routerLink="/internal/login" (click)="logout(); closeMenu()">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 6h8v12h-8" /><path d="M14 12H4" /><path d="m7 9-3 3 3 3" /></svg>
           <span>تسجيل خروج</span>
-        </button>
+        </a>
       </nav>
     </aside>
   </section>

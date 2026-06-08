@@ -1,8 +1,8 @@
 import { BaseDto } from './base.dto';
 
 export interface UserGroupDto extends BaseDto {
-  userId: string;
+  userId: number;
   userName?: string;
-  groupId: string;
+  groupId: number;
   groupName?: string;
 }

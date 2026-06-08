@@ -4,7 +4,7 @@ import { SearchParameters } from './api.types';
 export interface PrivilegeDto extends BaseDto {
   privilegeName: string;
   privilegeNameEn: string;
-  parentId?: string;
+  parentId?: number | string;
   icon?: string;
   parentName?: string;
   sortOrder?: number;

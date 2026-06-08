@@ -1,49 +1,152 @@
-﻿<section class="petra-dashboard" dir="rtl">
-  <header class="dash-header">
-    <div>
-      <h1>لوحة التحكم</h1>
-      @if (requesterDisplayName) {
-        <p class="welcome-line">مرحباً، {{ requesterDisplayName }}</p>
-      }
-    </div>
-    <button type="button" class="refresh-btn" (click)="loadStats()" [disabled]="loading">تحديث</button>
-  </header>
+﻿
+<h2 class="dash-section-title">المؤشرات</h2>
+<p class="dash-section-hint">إحصائيات صفحات لوحة الإدارة — المستخدمون، الأدوار، والخدمات</p>
 
-  @if (loading) {
-    <p class="dash-loading">جاري تحميل البيانات…</p>
-  } @else {
-    <div class="stats-grid">
-      @for (card of visibleStats(); track card.label) {
-        <a class="stat-card" [routerLink]="card.link">
-          <span class="stat-label">{{ card.label }}</span>
-          <strong class="stat-value">{{ card.count }}</strong>
-          <span class="stat-link">عرض</span>
-        </a>
-      }
+<section class="stats-grid stats-grid-4">
+  <a class="stat-card stat-card-link" routerLink="/internal/users">
+    <div class="card-head">
+      <span>المستخدمون</span>
+      <span class="icon-badge lavender">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </span>
     </div>
+    <p class="stat-value">{{ data.cards.usersTotal }}</p>
+    <p class="stat-meta">{{ data.cards.usersActive }} نشط</p>
+    <span class="stat-link">عرض القائمة</span>
+  </a>
 
-    <section class="quick-links">
-      <h2>اختصارات</h2>
-      <div class="links-row">
-        @if (can(systemPermissions.Users)) {
-          <a routerLink="/internal/users">إدارة المستخدمين</a>
-        }
-        @if (can(systemPermissions.Roles)) {
-          <a routerLink="/internal/user-roles">الأدوار والصلاحيات</a>
-        }
-        @if (can(systemPermissions.Groups)) {
-          <a routerLink="/internal/groups">المجموعات</a>
-        }
-        @if (can(systemPermissions.Applications)) {
-          <a routerLink="/internal/applications">التطبيقات (APK)</a>
-        }
-        @if (can(systemPermissions.Notifications)) {
-          <a routerLink="/internal/notifications">الإشعارات</a>
-        }
-        @if (can(systemPermissions.Settings)) {
-          <a routerLink="/internal/settings">الإعدادات</a>
-        }
+  <a class="stat-card stat-card-link" routerLink="/internal/user-roles">
+    <div class="card-head">
+      <span>أدوار المستخدمين</span>
+      <span class="icon-badge sky">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 11a4 4 0 1 0-4-4 4 4 0 0 0 4 4Z" />
+          <path d="M4 20a8 8 0 0 1 16 0" />
+        </svg>
+      </span>
+    </div>
+    <p class="stat-value">{{ data.cards.rolesTotal }}</p>
+    <p class="stat-meta">{{ data.cards.rolesActive }} نشط</p>
+    <span class="stat-link">عرض القائمة</span>
+  </a>
+
+  <a class="stat-card stat-card-link" routerLink="/internal/request-types">
+    <div class="card-head">
+      <span>أنواع الخدمات</span>
+      <span class="icon-badge peach">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M4 6h16M4 12h10M4 18h14" />
+        </svg>
+      </span>
+    </div>
+    <p class="stat-value">{{ data.cards.serviceTypesTotal }}</p>
+    <p class="stat-meta">{{ data.cards.serviceTypesWithWorkflow }} بسير عمل</p>
+    <span class="stat-link">عرض القائمة</span>
+  </a>
+
+  <a class="stat-card stat-card-link" routerLink="/internal/integration-types">
+    <div class="card-head">
+      <span>القوائم المرجعية</span>
+      <span class="icon-badge mint">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 3v18M3 12h18" />
+        </svg>
+      </span>
+    </div>
+    <p class="stat-value">{{ data.cards.lookupTotal }}</p>
+    <p class="stat-meta">{{ data.cards.integrationTotal }} تكامل · {{ data.cards.attachmentTotal }} مرفق</p>
+    <span class="stat-link">أنواع التكامل</span>
+  </a>
+</section>
+
+<section class="charts-grid">
+  <article class="chart-card chart-card-wide">
+    <header class="chart-head">
+      <div>
+        <h2>إنشاء السجلات خلال 7 أيام</h2>
+        <p>مستخدمون، أدوار، وأنواع خدمات جديدة حسب تاريخ الإنشاء.</p>
       </div>
-    </section>
-  }
+    </header>
+
+    <apx-chart
+      [series]="creationTrendChart.series"
+      [chart]="creationTrendChart.chart"
+      [colors]="creationTrendChart.colors"
+      [stroke]="creationTrendChart.stroke"
+      [dataLabels]="creationTrendChart.dataLabels"
+      [legend]="creationTrendChart.legend"
+      [xaxis]="creationTrendChart.xaxis"
+      [yaxis]="creationTrendChart.yaxis"
+      [grid]="creationTrendChart.grid"
+      [fill]="creationTrendChart.fill"
+      [tooltip]="creationTrendChart.tooltip"
+    ></apx-chart>
+  </article>
+
+  <article class="chart-card">
+    <header class="chart-head compact">
+      <div>
+        <h2>حالة المستخدمين</h2>
+        <p>نشط مقابل غير نشط.</p>
+      </div>
+    </header>
+
+    <apx-chart
+      [series]="usersDonutChart.series"
+      [chart]="usersDonutChart.chart"
+      [labels]="usersDonutChart.labels"
+      [colors]="usersDonutChart.colors"
+      [legend]="usersDonutChart.legend"
+      [dataLabels]="usersDonutChart.dataLabels"
+      [stroke]="usersDonutChart.stroke"
+      [plotOptions]="usersDonutChart.plotOptions"
+      [responsive]="usersDonutChart.responsive"
+      [tooltip]="usersDonutChart.tooltip"
+    ></apx-chart>
+  </article>
+
+  <article class="chart-card">
+    <header class="chart-head compact">
+      <div>
+        <h2>أنواع الخدمات</h2>
+        <p>نشط، غير نشط، ومرتبط بسير عمل.</p>
+      </div>
+    </header>
+
+    <apx-chart
+      [series]="serviceDonutChart.series"
+      [chart]="serviceDonutChart.chart"
+      [labels]="serviceDonutChart.labels"
+      [colors]="serviceDonutChart.colors"
+      [legend]="serviceDonutChart.legend"
+      [dataLabels]="serviceDonutChart.dataLabels"
+      [stroke]="serviceDonutChart.stroke"
+      [plotOptions]="serviceDonutChart.plotOptions"
+      [responsive]="serviceDonutChart.responsive"
+      [tooltip]="serviceDonutChart.tooltip"
+    ></apx-chart>
+  </article>
+
+  <article class="chart-card chart-card-wide">
+    <header class="chart-head">
+      <div>
+        <h2>ملخص الوحدات</h2>
+        <p>عدد السجلات في كل قسم من قائمة النظام.</p>
+      </div>
+    </header>
+
+    <apx-chart
+      [series]="moduleBarChart.series"
+      [chart]="moduleBarChart.chart"
+      [colors]="moduleBarChart.colors"
+      [plotOptions]="moduleBarChart.plotOptions"
+      [dataLabels]="moduleBarChart.dataLabels"
+      [xaxis]="moduleBarChart.xaxis"
+      [yaxis]="moduleBarChart.yaxis"
+      [grid]="moduleBarChart.grid"
+      [tooltip]="moduleBarChart.tooltip"
+    ></apx-chart>
+  </article>
 </section>

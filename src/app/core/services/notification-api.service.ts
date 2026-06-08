@@ -11,7 +11,7 @@ export class NotificationApiService extends ApiBaseService {
     return super.searchEntity<NotificationDto, NotificationSearchFilter>(this.path, filter);
   }
 
-  getById(id: string): Observable<NotificationDto> {
+  getById(id: number | string): Observable<NotificationDto> {
     return super.getEntityById<NotificationDto>(this.path, id);
   }
 
@@ -23,7 +23,7 @@ export class NotificationApiService extends ApiBaseService {
     return super.updateEntity(this.path, dto);
   }
 
-  delete(id: string): Observable<boolean> {
+  delete(id: number | string): Observable<boolean> {
     return super.deleteEntity(this.path, id);
   }
 }

@@ -1,7 +1,6 @@
 import { Component, inject, signal } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
-import { Permissions } from '../../shared/enums';
 import { INTERNAL_ROOT } from '../internal-route-paths';
 
 @Component({
@@ -15,18 +14,12 @@ export class InternalLayoutComponent {
   private readonly router = inject(Router);
 
   readonly internalRoot = INTERNAL_ROOT;
-  readonly permissions = Permissions;
-
   readonly sessionDisplayName = signal('');
 
   isMenuOpen = false;
 
   constructor() {
     this.refreshSessionDisplayName();
-  }
-
-  can(guid: string): boolean {
-    return this.auth.hasPermission(guid);
   }
 
   logout(): void {

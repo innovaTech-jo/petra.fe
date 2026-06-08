@@ -1,8 +1,8 @@
 import { BaseDto } from './base.dto';
 
 export interface RolePrivilegeDto extends BaseDto {
-  privilegeId: string;
+  privilegeId: number | string;
   privilegeName?: string;
-  roleId: string;
+  roleId: number;
   roleName?: string;
 }

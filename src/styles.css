@@ -6,6 +6,60 @@
   --app-primary: #d96d0f;
   --app-primary-hover: #b85a0d;
   --app-primary-soft: #fff8f2;
+  --app-control-radius: 5px;
+}
+
+/* Controls ó 5px radius, no text-field shadows */
+input:not([type='checkbox']):not([type='radio']):not([type='range']):not([type='file']),
+textarea,
+select,
+button,
+.p-inputtext,
+.p-select,
+.p-select-label,
+.p-multiselect,
+.p-multiselect-label,
+.p-inputnumber-input,
+.p-datepicker-input,
+.p-autocomplete-input,
+.p-textarea,
+.p-password-input {
+  border-radius: var(--app-control-radius) !important;
+}
+
+input:not([type='checkbox']):not([type='radio']):not([type='range']):not([type='file']),
+textarea,
+select,
+.p-inputtext,
+.p-select,
+.p-multiselect,
+.p-inputnumber-input,
+.p-datepicker-input,
+.p-autocomplete-input,
+.p-textarea,
+.p-password-input,
+.p-select-filter input {
+  box-shadow: none !important;
+}
+
+input:not([type='checkbox']):not([type='radio']):not([type='range']):not([type='file']):focus,
+input:not([type='checkbox']):not([type='radio']):not([type='range']):not([type='file']):focus-visible,
+textarea:focus,
+textarea:focus-visible,
+select:focus,
+select:focus-visible,
+.p-inputtext:focus,
+.p-inputtext:focus-visible,
+.p-inputtext:enabled:focus,
+.p-select:focus-within,
+.p-multiselect:focus-within,
+.p-inputnumber-input:focus,
+.p-datepicker-input:focus,
+.p-autocomplete-input:focus,
+.p-textarea:focus,
+.p-password-input:focus,
+.p-select-filter input:focus {
+  box-shadow: none !important;
 }
 
 /* System: no drop shadows on buttons (native + PrimeNG) */
@@ -24,7 +78,9 @@ button[type='submit'] {
 }
 
 .p-button:focus-visible {
-  box-shadow: 0 0 0 2px #fff, 0 0 0 4px var(--app-primary) !important;
+  box-shadow: none !important;
+  outline: 2px solid var(--app-primary);
+  outline-offset: 2px;
 }
 
 /* Primary CTA in page headers (projected into app-page-header) */
@@ -34,7 +90,7 @@ button[type='submit'] {
   justify-content: center;
   gap: 8px;
   padding: 12px 22px;
-  border-radius: 999px;
+  border-radius: var(--app-control-radius);
   border: none;
   background: var(--app-primary);
   color: #fff;
@@ -70,13 +126,13 @@ button[type='submit'] {
   gap: 10px;
 }
 
-/* Unified ´addª control (same as users list: height, padding, icon) */
+/* Unified ùaddù control (same as users list: height, padding, icon) */
 button.add-user-btn,
 a.add-user-btn {
   border: 0;
   background: var(--app-primary);
   color: #fff;
-  border-radius: 999px;
+  border-radius: var(--app-control-radius);
   padding: 8px 14px;
   min-height: 36px;
   box-sizing: border-box;
@@ -141,6 +197,82 @@ table.app-data-table tbody td {
   text-align: center;
 }
 
+/* Table row action links (????? / ?????) ù global so routerLink anchors always match */
+.table-actions {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  justify-content: center;
+}
+
+.table-actions .edit-btn,
+.table-actions .perm-btn {
+  border-radius: var(--app-control-radius);
+  padding: 6px 12px;
+  min-height: 30px;
+  box-sizing: border-box;
+  font-size: 0.72rem;
+  font-weight: 700;
+  font-family: inherit;
+  line-height: 1.2;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease,
+    transform 0.1s ease;
+}
+
+.table-actions .edit-btn {
+  background: #fff;
+  color: var(--app-primary);
+  border: 1px solid var(--app-primary);
+}
+
+.table-actions .edit-btn:hover {
+  background: color-mix(in srgb, var(--app-primary) 12%, #fff);
+  border-color: var(--app-primary-hover, #b85a0d);
+  color: var(--app-primary-hover, #b85a0d);
+}
+
+.table-actions .edit-btn:focus-visible {
+  box-shadow: none;
+  outline: 2px solid var(--app-primary);
+  outline-offset: 1px;
+}
+
+.table-actions .edit-btn:active {
+  transform: scale(0.98);
+  background: color-mix(in srgb, var(--app-primary) 18%, #fff);
+}
+
+.table-actions .perm-btn {
+  background: #fff;
+  color: #0369a1;
+  border: 1px solid color-mix(in srgb, #0ea5e9 55%, #bae6fd);
+}
+
+.table-actions .perm-btn:hover {
+  background: color-mix(in srgb, #0ea5e9 10%, #fff);
+  border-color: #0284c7;
+  color: #0c4a6e;
+}
+
+.table-actions .perm-btn:focus-visible {
+  box-shadow: none;
+  outline: 2px solid #0ea5e9;
+  outline-offset: 1px;
+}
+
+.table-actions .perm-btn:active {
+  transform: scale(0.98);
+  background: color-mix(in srgb, #0ea5e9 14%, #fff);
+}
+
 /* PrimeNG data tables */
 .p-datatable.app-table-prime .p-datatable-thead > tr > th {
   background: #f7f9fe !important;
@@ -171,7 +303,7 @@ a {
   font-family: inherit;
 }
 
-/* Transport voucher: p-select uses appendTo="body" ó panel must match RTL + font */
+/* Transport voucher: p-select uses appendTo="body" ù panel must match RTL + font */
 .tv-select-overlay {
   direction: rtl;
   font-family: "Tajawal", "Segoe UI", sans-serif;

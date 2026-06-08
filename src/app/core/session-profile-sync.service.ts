@@ -16,7 +16,7 @@ export class SessionProfileSyncService {
     } catch {
       return;
     }
-    const userId = session.id?.trim();
+    const userId = session.id;
     if (!userId) return;
 
     this.userService.getById(userId).subscribe({
@@ -29,7 +29,7 @@ export class SessionProfileSyncService {
         } catch {
           return;
         }
-        if (s.id?.trim() !== userId) return;
+        if (s.id !== userId) return;
         s.fullName = u.fullName ?? s.fullName;
         s.userName = u.userName ?? s.userName;
         s.email = u.email ?? s.email;

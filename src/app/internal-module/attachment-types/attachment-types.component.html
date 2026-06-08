@@ -1,0 +1,128 @@
+@if (notificationService.toast(); as t) {
+  <div class="toast-banner" [class.error]="t.type === 'error'" role="status">
+    {{ t.text }}
+    <button type="button" class="toast-dismiss" (click)="notificationService.dismiss()">×</button>
+  </div>
+}
+
+<section class="lookup-shell">
+  <app-page-header
+    eyebrow="خدمات"
+    title="أنواع المرفقات"
+    description="قائمة مرجعية لأنواع المرفقات المطلوبة في الخدمات."
+  >
+    <div class="app-page-header-toolbar">
+      <label class="search-field">
+        <span class="sr-only">بحث</span>
+        <input
+          type="search"
+          [value]="searchParameters.keyword ?? ''"
+          (input)="onSearchInput($event)"
+          placeholder="بحث بالاسم أو الكود..."
+        />
+      </label>
+      @if (can(systemPermissions.AddAttachmentType)) {
+        <button type="button" class="add-user-btn" (click)="openCreate()">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" /></svg>
+          <span>إضافة</span>
+        </button>
+      }
+    </div>
+  </app-page-header>
+
+  <div class="users-card">
+    <div class="table-wrap">
+      <table class="app-data-table">
+        <thead>
+          <tr>
+            <th>الاسم</th>
+            <th>الكود</th>
+            <th>الحالة</th>
+            @if (can(systemPermissions.EditAttachmentType)) {
+              <th>إجراءات</th>
+            }
+          </tr>
+        </thead>
+        <tbody>
+          @if (loadingList) {
+            <tr>
+              <td [attr.colspan]="colCount()" class="empty-state">جاري التحميل...</td>
+            </tr>
+          } @else {
+            @for (row of allItems; track row.id) {
+              <tr>
+                <td data-label="الاسم">{{ row.name || '—' }}</td>
+                <td data-label="الكود">{{ row.code || '—' }}</td>
+                <td data-label="الحالة">
+                  @if (row.active === 1) {
+                    <span class="status">نشط</span>
+                  } @else {
+                    <span class="status inactive">غير نشط</span>
+                  }
+                </td>
+                @if (can(systemPermissions.EditAttachmentType)) {
+                  <td data-label="إجراءات">
+                    <div class="table-actions">
+                      <button type="button" class="edit-btn" (click)="openEdit(row)">تعديل</button>
+                    </div>
+                  </td>
+                }
+              </tr>
+            } @empty {
+              <tr>
+                <td class="empty-state" [attr.colspan]="colCount()">لا توجد سجلات.</td>
+              </tr>
+            }
+          }
+        </tbody>
+      </table>
+    </div>
+
+    @if ((searchParameters.totalCount ?? 0) > 0) {
+      <app-list-pagination-bar
+        [totalCount]="searchParameters.totalCount ?? 0"
+        [pageNumber]="searchParameters.pagingParameters!.pageNumber ?? 1"
+        [pageSize]="searchParameters.pagingParameters!.pageSize ?? 10"
+        [pageSizeOptions]="pageSizeOptions"
+        (pageChange)="changePage($event)"
+        (pageSizeChange)="onPageSizeChange($event)"
+      />
+    }
+  </div>
+</section>
+
+@if (isModalOpen) {
+  <div class="modal-overlay" (click)="closeModal()">
+    <section class="user-modal lookup-modal" (click)="$event.stopPropagation()" dir="rtl">
+      <header class="modal-header">
+        <div>
+          <h3>{{ editing.id ? 'تعديل نوع المرفق' : 'نوع مرفق جديد' }}</h3>
+        </div>
+        <button class="modal-close" type="button" (click)="closeModal()" aria-label="اغلاق">×</button>
+      </header>
+      <form class="lookup-form">
+        <label class="form-field full">
+          <span>الاسم <span class="req">*</span></span>
+          <input class="u-input" type="text" [(ngModel)]="editing.name" name="name" required />
+        </label>
+        <label class="form-field full">
+          <span>الكود <span class="req">*</span></span>
+          <input class="u-input" type="text" [(ngModel)]="editing.code" name="code" required />
+        </label>
+        <div class="form-field full toggle-row">
+          <span>نشط</span>
+          <p-toggleswitch
+            inputId="att-active"
+            [ngModel]="editing.active === 1"
+            (ngModelChange)="setActiveFromToggle($event)"
+            [ngModelOptions]="{ standalone: true }"
+          />
+        </div>
+        <div class="form-actions">
+          <button type="button" class="save-btn" [disabled]="!canSave()" (click)="save()">حفظ</button>
+          <button type="button" class="cancel-btn" (click)="closeModal()">إلغاء</button>
+        </div>
+      </form>
+    </section>
+  </div>
+}

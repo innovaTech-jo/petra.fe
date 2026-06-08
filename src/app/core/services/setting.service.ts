@@ -12,7 +12,7 @@ export class SettingService extends ApiBaseService {
     return super.searchEntity<SettingDto, SettingSearchFilter>(this.path, filter);
   }
 
-  getById(id: string): Observable<SettingDto> {
+  getById(id: number | string): Observable<SettingDto> {
     return super.getEntityById<SettingDto>(this.path, id);
   }
 
@@ -24,7 +24,7 @@ export class SettingService extends ApiBaseService {
     return super.updateEntity(this.path, dto);
   }
 
-  delete(id: string): Observable<boolean> {
+  delete(id: number | string): Observable<boolean> {
     return super.deleteEntity(this.path, id);
   }
 

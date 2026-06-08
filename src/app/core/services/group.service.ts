@@ -11,7 +11,7 @@ export class GroupService extends ApiBaseService {
     return super.searchEntity<GroupDto, GroupSearchFilter>(this.path, filter);
   }
 
-  getById(id: string): Observable<GroupDto> {
+  getById(id: number | string): Observable<GroupDto> {
     return super.getEntityById<GroupDto>(this.path, id);
   }
 
@@ -23,7 +23,7 @@ export class GroupService extends ApiBaseService {
     return super.updateEntity(this.path, dto);
   }
 
-  delete(id: string): Observable<boolean> {
+  delete(id: number | string): Observable<boolean> {
     return super.deleteEntity(this.path, id);
   }
 }

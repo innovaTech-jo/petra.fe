@@ -163,19 +163,21 @@ tbody tr:last-child td {
   gap: 6px;
 }
 
-.table-actions button {
+.table-actions .edit-btn {
   border-radius: 8px;
   padding: 6px 12px;
+  min-height: 30px;
+  box-sizing: border-box;
   font-size: 0.72rem;
   font-weight: 700;
   cursor: pointer;
-}
-
-/* Match users-crud list — primary outline (تعديل) */
-.table-actions .edit-btn {
   background: #fff;
   color: var(--app-primary);
   border: 1px solid var(--app-primary);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   transition:
     background 0.15s ease,
     border-color 0.15s ease,
@@ -199,11 +201,21 @@ tbody tr:last-child td {
   background: color-mix(in srgb, var(--app-primary) 18%, #fff);
 }
 
-/* Secondary outline — إدارة الصلاحيات */
 .table-actions .perm-btn {
+  border-radius: 8px;
+  padding: 6px 12px;
+  min-height: 30px;
+  box-sizing: border-box;
+  font-size: 0.72rem;
+  font-weight: 700;
+  cursor: pointer;
   background: #fff;
   color: #0369a1;
   border: 1px solid color-mix(in srgb, #0ea5e9 55%, #bae6fd);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   transition:
     background 0.15s ease,
     border-color 0.15s ease,

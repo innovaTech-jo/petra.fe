@@ -11,16 +11,15 @@ export interface UsersDto extends BaseDto {
   userName: string;
   fullName: string;
   active: number;
-  token: string;
-  refreshToken: string;
-  permssions: string[];
-  userRoles?: UserRoleDto[];
-  userGroups?: UserGroupDto[];
-  operationType?: number;
-  email?: string;
-  cityId?: string;
+  email: string;
+  cityId?: number | null;
+  isSystem?: number | null;
   password?: string;
   newPassword?: string;
-  departmentId?: string;
-  signatureImageBase64?: string;
+  token?: string;
+  refreshToken?: string;
+  permssions?: number[];
+  operationType?: number;
+  userRoles?: UserRoleDto[];
+  userGroups?: UserGroupDto[];
 }

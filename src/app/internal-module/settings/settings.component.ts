@@ -62,7 +62,7 @@ export class SettingsComponent extends GceSoftBase implements OnInit {
     this.getAllSetting();
   }
 
-  getSettingById(id: string | undefined): void {
+  getSettingById(id: number | undefined): void {
     if (!id) return;
     this.settingService.getById(id).subscribe({
       next: (s) => {

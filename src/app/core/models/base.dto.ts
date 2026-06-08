@@ -1,7 +1,7 @@
 export interface BaseDto {
-  id: string;
-  createdBy: string;
+  id: number;
+  createdBy: number;
   createdDate: string;
-  modifiedBy?: string;
+  modifiedBy?: number;
   modifiedDate?: string;
 }

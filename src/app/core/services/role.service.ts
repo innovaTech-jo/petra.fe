@@ -11,7 +11,7 @@ export class RoleService extends ApiBaseService {
     return super.searchEntity<RoleDto, RoleSearchFilter>(this.path, filter);
   }
 
-  getById(id: string): Observable<RoleDto> {
+  getById(id: number): Observable<RoleDto> {
     return super.getEntityById<RoleDto>(this.path, id);
   }
 
@@ -23,7 +23,7 @@ export class RoleService extends ApiBaseService {
     return super.updateEntity(this.path, dto);
   }
 
-  delete(id: string): Observable<boolean> {
+  delete(id: number): Observable<boolean> {
     return super.deleteEntity(this.path, id);
   }
 }
